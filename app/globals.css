@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0d0618;
+  --card: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #e91e8c;
+  --accent-dim: rgba(233, 30, 140, 0.15);
+  --purple: #7c3aed;
+  --text: #f0e8ff;
+  --muted: #9876aa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", "Yu Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* progress bar smooth */
+.progress-bar {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* option button hover */
+.option-btn {
+  transition: all 0.15s ease;
+}
+.option-btn:hover {
+  background: rgba(233, 30, 140, 0.1);
+  border-color: rgba(233, 30, 140, 0.5);
+  transform: translateX(4px);
+}
+.option-btn.selected {
+  background: rgba(233, 30, 140, 0.18);
+  border-color: #e91e8c;
+}
+
+/* radar chart */
+.radar-area {
+  fill: rgba(233, 30, 140, 0.2);
+  stroke: #e91e8c;
+  stroke-width: 2;
+}
+
+/* deviation number glow */
+.deviation-number {
+  text-shadow: 0 0 40px rgba(233, 30, 140, 0.6),
+    0 0 80px rgba(233, 30, 140, 0.3);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease infinite;
+}
