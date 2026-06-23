@@ -27,6 +27,19 @@ const TESTS = [
     categories: ["表現力", "傾聴力", "場の読み", "自己開示力", "関係維持力"],
     research: "SSI (Riggio) / Active Listening Scale / Self-Monitoring (Snyder)",
   },
+  {
+    href: "/inka",
+    startHref: "/inka/quiz",
+    emoji: "🌙",
+    title: "陰キャ偏差値テスト",
+    desc: "陰キャ度を偏差値で数値化",
+    accent: "#a855f7",
+    accentBg: "rgba(168,85,247,0.12)",
+    accentBorder: "rgba(168,85,247,0.25)",
+    accentGlow: "rgba(168,85,247,0.4)",
+    categories: ["人見知り度", "ぼっち耐性", "陰の趣味力", "群れ苦手度", "目立ちたくなさ"],
+    research: "社交不安尺度 / Big Five 内向性 / 孤独親和性研究",
+  },
 ];
 
 export default function Hub() {

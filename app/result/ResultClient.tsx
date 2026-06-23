@@ -264,10 +264,20 @@ export default function ResultClient({ params }: Props) {
           >
             <span className="text-2xl">💬</span>
             <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: "#e8f4ff" }}>コミュ力偏差値テストも試してみる</p>
-              <p className="text-xs" style={{ color: "#2a5a77" }}>25問で話す力・聞く力・場の読みを偏差値化</p>
+              <p className="text-sm font-bold" style={{ color: "#e8f4ff" }}>コミュ力偏差値テスト</p>
+              <p className="text-xs" style={{ color: "#2a5a77" }}>話す力・聞く力・場の読みを偏差値化 →</p>
             </div>
-            <span style={{ color: "#4a7a99" }}>→</span>
+          </Link>
+          <Link
+            href="/inka"
+            className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5 mt-2"
+            style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+          >
+            <span className="text-2xl">🌙</span>
+            <div className="flex-1">
+              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
+              <p className="text-xs" style={{ color: "#3a2a5a" }}>人見知り・ぼっち耐性・陰の趣味を偏差値化 →</p>
+            </div>
           </Link>
         </div>
 

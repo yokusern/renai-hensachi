@@ -262,10 +262,20 @@ export default function CommuResultClient({ params }: Props) {
           >
             <span className="text-2xl">💘</span>
             <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テストも試してみる</p>
-              <p className="text-xs" style={{ color: "#4a3a5a" }}>25問で恋愛力を偏差値化 → Gottman研究ベース</p>
+              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
+              <p className="text-xs" style={{ color: "#4a3a5a" }}>恋愛力を5軸で偏差値化 →</p>
             </div>
-            <span style={{ color: "#9876aa" }}>→</span>
+          </Link>
+          <Link
+            href="/inka"
+            className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5 mt-2"
+            style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+          >
+            <span className="text-2xl">🌙</span>
+            <div className="flex-1">
+              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
+              <p className="text-xs" style={{ color: "#3a2a5a" }}>人見知り・ぼっち耐性・陰の趣味を偏差値化 →</p>
+            </div>
           </Link>
         </div>
 

@@ -11,16 +11,19 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "renai";
 
   const isCommu = type === "commu";
+  const isInka = type === "inka";
 
-  const accentColor = isCommu ? "#0ea5e9" : "#e91e8c";
+  const accentColor = isCommu ? "#0ea5e9" : isInka ? "#a855f7" : "#e91e8c";
   const bgGradient = isCommu
     ? "linear-gradient(135deg, #0a1628 0%, #060e1c 50%, #060b15 100%)"
+    : isInka
+    ? "linear-gradient(135deg, #120826 0%, #08051a 50%, #060318 100%)"
     : "linear-gradient(135deg, #1a0a2e 0%, #0d0618 50%, #12041f 100%)";
-  const glowColor = isCommu ? "rgba(14,165,233,0.12)" : "rgba(233,30,140,0.12)";
-  const labelColor = isCommu ? "#38bdf8" : "#f472b6";
-  const labelBg = isCommu ? "rgba(14,165,233,0.15)" : "rgba(233,30,140,0.15)";
-  const labelBorder = isCommu ? "rgba(14,165,233,0.3)" : "rgba(233,30,140,0.3)";
-  const testLabel = isCommu ? "💬 コミュ力偏差値テスト" : "💘 恋愛偏差値テスト";
+  const glowColor = isCommu ? "rgba(14,165,233,0.12)" : isInka ? "rgba(168,85,247,0.12)" : "rgba(233,30,140,0.12)";
+  const labelColor = isCommu ? "#38bdf8" : isInka ? "#c084fc" : "#f472b6";
+  const labelBg = isCommu ? "rgba(14,165,233,0.15)" : isInka ? "rgba(168,85,247,0.15)" : "rgba(233,30,140,0.15)";
+  const labelBorder = isCommu ? "rgba(14,165,233,0.3)" : isInka ? "rgba(168,85,247,0.3)" : "rgba(233,30,140,0.3)";
+  const testLabel = isCommu ? "💬 コミュ力偏差値テスト" : isInka ? "🌙 陰キャ偏差値テスト" : "💘 恋愛偏差値テスト";
   const urlLabel = "renai-hensachi.vercel.app";
 
   return new ImageResponse(
