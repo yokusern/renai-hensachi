@@ -3,67 +3,66 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { CATEGORY_LABELS } from "@/lib/scoring";
-import type { CategoryKey } from "@/data/questions";
+import { CATEGORY_LABELS } from "@/lib/commu-scoring";
+import type { CategoryKey } from "@/data/commu-questions";
 
-const RadarChart = dynamic(() => import("@/components/RadarChart"), { ssr: false });
+const CommuRadarChart = dynamic(() => import("@/components/CommuRadarChart"), { ssr: false });
 
 interface Props {
   params: Record<string, string>;
 }
 
 const CATEGORY_KEYS: CategoryKey[] = [
-  "communication",
-  "selfAwareness",
-  "empathy",
-  "initiative",
-  "mentalStability",
+  "expression",
+  "listening",
+  "awareness",
+  "disclosure",
+  "building",
 ];
 
 const STRENGTH_TEXTS: Record<CategoryKey, string> = {
-  communication: "言葉で気持ちを伝える力が高く、相手との距離を自然に縮められる",
-  selfAwareness: "自分の恋愛パターンを客観視できており、同じ失敗を繰り返しにくい",
-  empathy: "相手の感情の変化に敏感で、言葉にならない本音を察することができる",
-  initiative: "好きという気持ちを行動に変えられるので、チャンスを逃しにくい",
-  mentalStability: "感情の波が少なく、恋愛でも自分軸を保ち続けられる",
+  expression: "考えや気持ちを言葉にする力が高く、相手に自分の意図が届きやすい",
+  listening: "相手の話に真剣に向き合える力があり、「この人に話したい」と思われやすい",
+  awareness: "場の空気・タイミング・非言語情報の読み取りが得意で、摩擦を起こしにくい",
+  disclosure: "自分をオープンに見せられるため、相手も話しやすい雰囲気を作れる",
+  building: "一度できた関係を大切にし続ける力があり、信頼される人間関係を築きやすい",
 };
 
 const WEAKNESS_TEXTS: Record<CategoryKey, string> = {
-  communication: "気持ちを言葉にすることへの苦手意識が、すれ違いを生みやすい",
-  selfAwareness: "自分の恋愛パターンへの気づきが薄く、同じ壁にぶつかりやすい傾向がある",
-  empathy: "相手の感情変化を見落としがちで、タイミングを逃すことがある",
-  initiative: "行動を起こすまでに時間がかかり、機会を逃してしまうことがある",
-  mentalStability: "小さな変化に影響されやすく、不安を感じやすい傾向がある",
+  expression: "思っていることをうまく言葉にできず、誤解や伝達ミスが起きやすい傾向がある",
+  listening: "自分の話に意識が向きがちで、相手が「話を聞いてもらえていない」と感じることがある",
+  awareness: "場の雰囲気やタイミングを読み取ることへの苦手意識が、摩擦の原因になることがある",
+  disclosure: "自分のことを話すのが少ない分、相手との距離が縮まりにくい傾向がある",
+  building: "関係を維持するための能動的なアクションが少なく、自然消滅しやすいことがある",
 };
 
 const BAR_COLORS: Record<CategoryKey, string> = {
-  communication: "#e91e8c",
-  selfAwareness: "#7c3aed",
-  empathy: "#0ea5e9",
-  initiative: "#f59e0b",
-  mentalStability: "#10b981",
+  expression: "#0ea5e9",
+  listening: "#7c3aed",
+  awareness: "#f59e0b",
+  disclosure: "#10b981",
+  building: "#e91e8c",
 };
 
-export default function ResultClient({ params }: Props) {
+export default function CommuResultClient({ params }: Props) {
   const deviation = Number(params.d ?? 50);
-  const rank = params.r ?? "標準的な恋愛力";
-  const rankEmoji = params.re ?? "💙";
-  const strengthKey = (params.str ?? "communication") as CategoryKey;
-  const weaknessKey = (params.wk ?? "mentalStability") as CategoryKey;
+  const rank = params.r ?? "標準的なコミュ力";
+  const rankEmoji = params.re ?? "💬";
+  const strengthKey = (params.str ?? "expression") as CategoryKey;
+  const weaknessKey = (params.wk ?? "building") as CategoryKey;
   const percentile = Number(params.p ?? 50);
 
   const normalizedScores: Record<string, number> = {
-    communication: Number(params.c ?? 50),
-    selfAwareness: Number(params.s ?? 50),
-    empathy: Number(params.e ?? 50),
-    initiative: Number(params.i ?? 50),
-    mentalStability: Number(params.m ?? 50),
+    expression: Number(params.ex ?? 50),
+    listening: Number(params.li ?? 50),
+    awareness: Number(params.aw ?? 50),
+    disclosure: Number(params.di ?? 50),
+    building: Number(params.bu ?? 50),
   };
 
   const [displayDev, setDisplayDev] = useState(50);
   const [visible, setVisible] = useState(false);
 
-  // 偏差値カウントアップアニメーション
   useEffect(() => {
     setVisible(true);
     let frame = 0;
@@ -82,18 +81,17 @@ export default function ResultClient({ params }: Props) {
     return () => cancelAnimationFrame(id);
   }, [deviation]);
 
-  // Xシェアテキスト
-  const shareText = `恋愛偏差値【${deviation}】でした${rankEmoji}\n${rank}｜${CATEGORY_LABELS[strengthKey]}が得意で、${CATEGORY_LABELS[weaknessKey]}が課題みたい…\n#恋愛偏差値テスト`;
-  const shareUrl = `https://renai-hensachi.vercel.app/result?${new URLSearchParams(params).toString()}`;
+  const shareText = `コミュ力偏差値【${deviation}】でした${rankEmoji}\n${rank}｜${CATEGORY_LABELS[strengthKey]}が得意で、${CATEGORY_LABELS[weaknessKey]}が課題みたい…\n#コミュ力偏差値テスト #個人開発`;
+  const shareUrl = `https://renai-hensachi.vercel.app/commu/result?${new URLSearchParams(params).toString()}`;
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
 
   const isNoData = !params.d;
 
   if (isNoData) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center px-5" style={{ background: "linear-gradient(160deg, #1a0a2e 0%, #0d0618 60%)" }}>
-        <p className="text-center mb-6" style={{ color: "#9876aa" }}>先に診断を受けてください。</p>
-        <Link href="/quiz" className="text-sm px-6 py-3 rounded-xl font-bold text-white" style={{ background: "#e91e8c" }}>
+      <main className="min-h-screen flex flex-col items-center justify-center px-5" style={{ background: "linear-gradient(160deg, #0a1628 0%, #060e1c 60%)" }}>
+        <p className="text-center mb-6" style={{ color: "#4a7a99" }}>先に診断を受けてください。</p>
+        <Link href="/commu/quiz" className="text-sm px-6 py-3 rounded-xl font-bold text-white" style={{ background: "#0ea5e9" }}>
           診断を始める
         </Link>
       </main>
@@ -103,62 +101,62 @@ export default function ResultClient({ params }: Props) {
   return (
     <main
       className="min-h-screen flex flex-col items-center"
-      style={{ background: "linear-gradient(160deg, #1a0a2e 0%, #0d0618 60%, #12041f 100%)" }}
+      style={{ background: "linear-gradient(160deg, #0a1628 0%, #060e1c 60%, #060b15 100%)" }}
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#e91e8c" }} />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#0ea5e9" }} />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl" style={{ background: "#7c3aed" }} />
       </div>
 
       <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-12">
 
-        {/* ── 偏差値ヒーロー ── */}
+        {/* 偏差値ヒーロー */}
         <div
           className={`text-center mb-10 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <p className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: "#9876aa" }}>
+          <p className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: "#4a7a99" }}>
             あなたの
           </p>
-          <p className="text-base font-bold mb-2" style={{ color: "#c4a8d8" }}>
-            恋愛偏差値
+          <p className="text-base font-bold mb-2" style={{ color: "#93c5e8" }}>
+            コミュ力偏差値
           </p>
           <div
             className="deviation-number text-8xl sm:text-9xl font-black mb-3 leading-none"
-            style={{ color: "#e91e8c", fontVariantNumeric: "tabular-nums" }}
+            style={{ color: "#0ea5e9", fontVariantNumeric: "tabular-nums" }}
           >
             {displayDev}
           </div>
           <div
             className="inline-flex items-center gap-2 text-xl font-bold px-6 py-2 rounded-full mb-4"
-            style={{ background: "rgba(233,30,140,0.15)", color: "#f0e8ff", border: "1px solid rgba(233,30,140,0.3)" }}
+            style={{ background: "rgba(14,165,233,0.15)", color: "#e8f4ff", border: "1px solid rgba(14,165,233,0.3)" }}
           >
             {rankEmoji} {rank}
           </div>
-          <p className="text-sm" style={{ color: "#6b5b7b" }}>
-            上位 <span style={{ color: "#e91e8c", fontWeight: 700 }}>{percentile}%</span> に位置します
+          <p className="text-sm" style={{ color: "#2a5a77" }}>
+            上位 <span style={{ color: "#0ea5e9", fontWeight: 700 }}>{percentile}%</span> に位置します
           </p>
         </div>
 
-        {/* ── レーダーチャート ── */}
+        {/* レーダーチャート */}
         <div
           className="rounded-2xl p-6 mb-6"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: "#9876aa" }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: "#4a7a99" }}>
             5軸レーダーチャート
           </p>
-          <RadarChart
+          <CommuRadarChart
             scores={normalizedScores}
             labels={CATEGORY_LABELS as Record<string, string>}
           />
         </div>
 
-        {/* ── カテゴリ別スコアバー ── */}
+        {/* カテゴリ別スコアバー */}
         <div
           className="rounded-2xl p-6 mb-6"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "#9876aa" }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "#4a7a99" }}>
             カテゴリ別スコア
           </p>
           <div className="flex flex-col gap-4">
@@ -168,7 +166,7 @@ export default function ResultClient({ params }: Props) {
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm font-medium" style={{ color: "#c4a8d8" }}>
+                    <span className="text-sm font-medium" style={{ color: "#93c5e8" }}>
                       {CATEGORY_LABELS[key]}
                     </span>
                     <span className="text-sm font-black" style={{ color }}>
@@ -187,19 +185,19 @@ export default function ResultClient({ params }: Props) {
           </div>
         </div>
 
-        {/* ── 強み・弱み ── */}
+        {/* 強み・弱み */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div
             className="rounded-2xl p-5"
-            style={{ background: "rgba(233,30,140,0.08)", border: "1px solid rgba(233,30,140,0.2)" }}
+            style={{ background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)" }}
           >
-            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#e91e8c" }}>
+            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#0ea5e9" }}>
               💪 強み
             </p>
-            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>
+            <p className="text-sm font-bold mb-1" style={{ color: "#e8f4ff" }}>
               {CATEGORY_LABELS[strengthKey]}
             </p>
-            <p className="text-xs leading-relaxed" style={{ color: "#9876aa" }}>
+            <p className="text-xs leading-relaxed" style={{ color: "#4a7a99" }}>
               {STRENGTH_TEXTS[strengthKey]}
             </p>
           </div>
@@ -210,25 +208,25 @@ export default function ResultClient({ params }: Props) {
             <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#a78bfa" }}>
               🌱 伸びしろ
             </p>
-            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>
+            <p className="text-sm font-bold mb-1" style={{ color: "#e8f4ff" }}>
               {CATEGORY_LABELS[weaknessKey]}
             </p>
-            <p className="text-xs leading-relaxed" style={{ color: "#9876aa" }}>
+            <p className="text-xs leading-relaxed" style={{ color: "#4a7a99" }}>
               {WEAKNESS_TEXTS[weaknessKey]}
             </p>
           </div>
         </div>
 
-        {/* ── シェアボタン ── */}
-        <div className="flex flex-col gap-3 mb-10">
+        {/* シェアボタン */}
+        <div className="flex flex-col gap-3 mb-8">
           <a
             href={tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base transition-all hover:scale-105 active:scale-95"
             style={{
-              background: "linear-gradient(135deg, #e91e8c, #c2185b)",
-              boxShadow: "0 6px 24px rgba(233,30,140,0.35)",
+              background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+              boxShadow: "0 6px 24px rgba(14,165,233,0.35)",
             }}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -238,47 +236,46 @@ export default function ResultClient({ params }: Props) {
           </a>
 
           <Link
-            href="/quiz"
+            href="/commu/quiz"
             className="flex items-center justify-center w-full py-4 rounded-2xl font-bold text-base transition-all hover:opacity-80"
             style={{
               background: "rgba(255,255,255,0.05)",
               border: "1px solid rgba(255,255,255,0.1)",
-              color: "#9876aa",
+              color: "#4a7a99",
             }}
           >
             もう一度やる
           </Link>
         </div>
 
-        {/* コミュ力テストへの誘導 */}
+        {/* 恋愛偏差値テストへの誘導 */}
         <div
           className="rounded-2xl p-5 mb-8"
-          style={{ background: "rgba(14,165,233,0.05)", border: "1px solid rgba(14,165,233,0.15)" }}
+          style={{ background: "rgba(233,30,140,0.05)", border: "1px solid rgba(233,30,140,0.15)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-3 text-center" style={{ color: "#1a4a6a" }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3 text-center" style={{ color: "#6b3a5a" }}>
             偏差値シリーズ
           </p>
           <Link
-            href="/commu"
+            href="/"
             className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
           >
-            <span className="text-2xl">💬</span>
+            <span className="text-2xl">💘</span>
             <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: "#e8f4ff" }}>コミュ力偏差値テストも試してみる</p>
-              <p className="text-xs" style={{ color: "#2a5a77" }}>25問で話す力・聞く力・場の読みを偏差値化</p>
+              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テストも試してみる</p>
+              <p className="text-xs" style={{ color: "#4a3a5a" }}>25問で恋愛力を偏差値化 → Gottman研究ベース</p>
             </div>
-            <span style={{ color: "#4a7a99" }}>→</span>
+            <span style={{ color: "#9876aa" }}>→</span>
           </Link>
         </div>
 
-        {/* フッター */}
-        <p className="text-center text-xs" style={{ color: "#3a2a4a" }}>
+        <p className="text-center text-xs" style={{ color: "#1a3a55" }}>
           作成:{" "}
-          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-pink-400 transition-colors">
+          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-sky-400 transition-colors">
             @Yoko_ai_dev
           </a>
           {" · "}
-          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-pink-400 transition-colors">
+          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-sky-400 transition-colors">
             Portfolio
           </a>
         </p>

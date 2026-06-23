@@ -8,6 +8,20 @@ export async function GET(req: NextRequest) {
   const deviation = searchParams.get("d") ?? "50";
   const rank = searchParams.get("r") ?? "標準的な恋愛力";
   const emoji = searchParams.get("e") ?? "💙";
+  const type = searchParams.get("type") ?? "renai";
+
+  const isCommu = type === "commu";
+
+  const accentColor = isCommu ? "#0ea5e9" : "#e91e8c";
+  const bgGradient = isCommu
+    ? "linear-gradient(135deg, #0a1628 0%, #060e1c 50%, #060b15 100%)"
+    : "linear-gradient(135deg, #1a0a2e 0%, #0d0618 50%, #12041f 100%)";
+  const glowColor = isCommu ? "rgba(14,165,233,0.12)" : "rgba(233,30,140,0.12)";
+  const labelColor = isCommu ? "#38bdf8" : "#f472b6";
+  const labelBg = isCommu ? "rgba(14,165,233,0.15)" : "rgba(233,30,140,0.15)";
+  const labelBorder = isCommu ? "rgba(14,165,233,0.3)" : "rgba(233,30,140,0.3)";
+  const testLabel = isCommu ? "💬 コミュ力偏差値テスト" : "💘 恋愛偏差値テスト";
+  const urlLabel = "renai-hensachi.vercel.app";
 
   return new ImageResponse(
     (
@@ -19,12 +33,11 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #1a0a2e 0%, #0d0618 50%, #12041f 100%)",
+          background: bgGradient,
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* 装飾 円 */}
         <div
           style={{
             position: "absolute",
@@ -33,7 +46,7 @@ export async function GET(req: NextRequest) {
             width: "300px",
             height: "300px",
             borderRadius: "50%",
-            background: "rgba(233,30,140,0.12)",
+            background: glowColor,
             filter: "blur(60px)",
           }}
         />
@@ -50,39 +63,36 @@ export async function GET(req: NextRequest) {
           }}
         />
 
-        {/* ラベル */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: "rgba(233,30,140,0.15)",
-            border: "1px solid rgba(233,30,140,0.3)",
+            background: labelBg,
+            border: `1px solid ${labelBorder}`,
             borderRadius: "100px",
             padding: "8px 24px",
             marginBottom: "24px",
           }}
         >
-          <span style={{ fontSize: "16px", color: "#f472b6", fontWeight: 700, letterSpacing: "0.1em" }}>
-            💘 恋愛偏差値テスト
+          <span style={{ fontSize: "16px", color: labelColor, fontWeight: 700, letterSpacing: "0.1em" }}>
+            {testLabel}
           </span>
         </div>
 
-        {/* 偏差値 */}
         <div
           style={{
             fontSize: "160px",
             fontWeight: 900,
-            color: "#e91e8c",
+            color: accentColor,
             lineHeight: 1,
             marginBottom: "12px",
-            textShadow: "0 0 80px rgba(233,30,140,0.5)",
+            textShadow: `0 0 80px ${glowColor}`,
           }}
         >
           {deviation}
         </div>
 
-        {/* ランク */}
         <div
           style={{
             display: "flex",
@@ -101,9 +111,8 @@ export async function GET(req: NextRequest) {
           </span>
         </div>
 
-        {/* URL */}
-        <div style={{ fontSize: "18px", color: "#6b5b7b" }}>
-          renai-hensachi.vercel.app
+        <div style={{ fontSize: "18px", color: "#4a6a7a" }}>
+          {urlLabel}
         </div>
       </div>
     ),
