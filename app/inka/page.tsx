@@ -16,144 +16,147 @@ export const metadata: Metadata = {
   },
 };
 
-const CATEGORIES = [
-  { icon: "😰", label: "人見知り度", desc: "初対面・電話への苦手意識" },
-  { icon: "🌙", label: "ぼっち耐性", desc: "一人でいることの快適さ" },
-  { icon: "🎮", label: "陰の趣味力", desc: "インドア・オタク趣味への没頭" },
-  { icon: "🚷", label: "群れ苦手度", desc: "大人数・群れることへの抵抗感" },
-  { icon: "👻", label: "目立ちたくなさ", desc: "空気のように存在したい欲求" },
+const AXES = [
+  { n: "01", label: "人見知り度", desc: "初対面・電話への苦手意識", icon: "😰" },
+  { n: "02", label: "ぼっち耐性", desc: "一人でいることの快適さ", icon: "🌙" },
+  { n: "03", label: "陰の趣味力", desc: "インドア・オタク趣味への没頭", icon: "🎮" },
+  { n: "04", label: "群れ苦手度", desc: "大人数・群れることへの抵抗感", icon: "🚷" },
+  { n: "05", label: "目立ちたくなさ", desc: "空気のように存在したい欲求", icon: "👻" },
 ];
 
 export default function InkaHome() {
   return (
     <main
-      className="min-h-screen flex flex-col items-center"
+      className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #120826 0%, #08051a 60%, #060318 100%)" }}
     >
+      {/* ambient glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#a855f7" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: "#6d28d9", opacity: 0.08 }} />
+        <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full blur-3xl" style={{ background: "#a855f7", opacity: 0.05 }} />
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl" style={{ background: "#6d28d9", opacity: 0.06 }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-16">
-        <div className="text-center mb-14">
-          <div
-            className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase mb-6 px-4 py-2 rounded-full"
-            style={{ background: "rgba(168,85,247,0.12)", color: "#c084fc", border: "1px solid rgba(168,85,247,0.25)" }}
-          >
-            🌙 陰キャ度診断
+      <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 pb-24">
+
+        {/* ヒーロー — 極大タイポグラフィ + 左揃え */}
+        <div className="mb-16">
+          <p className="text-xs font-mono tracking-[0.3em] uppercase mb-8" style={{ color: "#3a1a5a" }}>
+            INTROVERTED TYPE
+          </p>
+
+          {/* 極大タイポグラフィ — 意外な要素 */}
+          <div className="mb-6">
+            <p className="font-black leading-[0.85] tracking-tighter" style={{
+              fontSize: "clamp(72px, 18vw, 140px)",
+              color: "rgba(168,85,247,0.12)",
+              userSelect: "none",
+              marginBottom: "-0.15em",
+            }}>
+              陰キャ
+            </p>
+            <h1 className="font-black leading-[1.0] tracking-tight" style={{ fontSize: "clamp(36px, 7vw, 60px)", color: "#f0e8ff" }}>
+              偏差値テスト
+            </h1>
           </div>
 
-          <div className="inline-flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-full mb-4" style={{ background: "rgba(168,85,247,0.1)", color: "#c084fc", border: "1px solid rgba(168,85,247,0.2)" }}>
+          <p className="text-sm leading-loose max-w-sm mb-4" style={{ color: "#5a3a8a" }}>
+            人見知り・ぼっち耐性・趣味没頭。5軸で数値化して自分がどのタイプか分類される。
+          </p>
+
+          <p className="text-xs mb-10 font-mono" style={{ color: "#3a1a5a" }}>
             日本人の約6割が陰キャ傾向と回答
-          </div>
-
-          <h1
-            className="text-5xl sm:text-6xl font-black mb-5 leading-tight"
-            style={{ letterSpacing: "-0.03em", color: "#f0e8ff" }}
-          >
-            自分がどんな
-            <span style={{ color: "#a855f7" }}>陰キャ</span>か
-            <br />
-            分類される
-          </h1>
-
-          <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#7a5a9a" }}>
-            人見知り・ぼっち耐性・趣味没頭の5軸で偏差値化。
-            <br />
-            25問・約5分・無料。
           </p>
 
           <Link
             href="/inka/quiz"
-            className="inline-flex items-center gap-3 text-lg font-bold px-10 py-5 rounded-2xl text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="inline-flex items-center gap-3 font-bold px-8 py-4 text-white transition-all duration-200 hover:scale-105 active:scale-95"
             style={{
               background: "linear-gradient(135deg, #a855f7, #7c3aed)",
-              boxShadow: "0 8px 32px rgba(168,85,247,0.4)",
+              boxShadow: "0 8px 32px rgba(168,85,247,0.35)",
+              borderRadius: "14px",
+              fontSize: "15px",
             }}
           >
             診断スタート
-            <span className="text-xl">→</span>
+            <span className="font-mono text-xs opacity-70">25問 · 5分 · 無料</span>
           </Link>
-
         </div>
 
-        <div
-          className="rounded-2xl p-6 mb-10"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
-        >
-          <p className="text-xs font-bold tracking-widest uppercase mb-5 text-center" style={{ color: "#5a4a7a" }}>
-            診断する5つの軸
+        {/* 区切り線 */}
+        <div className="mb-10" style={{ borderTop: "1px solid rgba(168,85,247,0.1)" }} />
+
+        {/* 5軸 — 番号付き縦リスト、グリッドを使わない */}
+        <div className="mb-14">
+          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-6" style={{ color: "#3a1a5a" }}>
+            DIAGNOSIS AXES
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {CATEGORIES.map((cat) => (
+          <div className="space-y-0">
+            {AXES.map((ax) => (
               <div
-                key={cat.label}
-                className="flex items-start gap-3 p-3 rounded-xl"
-                style={{ background: "rgba(255,255,255,0.03)" }}
+                key={ax.label}
+                className="flex items-center gap-6 py-4"
+                style={{ borderBottom: "1px solid rgba(168,85,247,0.06)" }}
               >
-                <span className="text-2xl shrink-0">{cat.icon}</span>
-                <div>
-                  <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>{cat.label}</p>
-                  <p className="text-xs" style={{ color: "#3a2a5a" }}>{cat.desc}</p>
+                <span className="text-xs font-mono w-6 shrink-0" style={{ color: "#3a1a5a" }}>{ax.n}</span>
+                <span className="text-lg w-8 text-center shrink-0">{ax.icon}</span>
+                <div className="flex-1">
+                  <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>{ax.label}</p>
+                  <p className="text-xs" style={{ color: "#3a2a5a" }}>{ax.desc}</p>
                 </div>
               </div>
             ))}
-            <div className="hidden sm:block" />
           </div>
+          <p className="text-xs mt-5" style={{ color: "#2a1a4a" }}>
+            社交不安尺度・孤独親和性研究・Big Five内向性スケールをもとに設計
+          </p>
         </div>
 
-        {/* 偏差値シリーズ */}
-        <div
-          className="rounded-2xl p-5 mb-10"
-          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: "#3a2a5a" }}>
-            偏差値シリーズ
+        {/* 偏差値シリーズ — コンパクト */}
+        <div className="mb-10">
+          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-4" style={{ color: "#2a1a4a" }}>
+            OTHER TESTS
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex gap-3">
             <Link
               href="/"
-              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-              style={{ border: "1px solid rgba(233,30,140,0.2)" }}
+              className="flex-1 flex items-center gap-3 p-4 rounded-xl transition-all hover:scale-[1.02]"
+              style={{ background: "rgba(233,30,140,0.06)", border: "1px solid rgba(233,30,140,0.15)" }}
             >
-              <span className="text-xl">💘</span>
+              <span>💘</span>
               <div>
-                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
-                <p className="text-xs" style={{ color: "#3a2a4a" }}>恋愛力を5軸で診断 → Gottman研究ベース</p>
+                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値</p>
+                <p className="text-xs" style={{ color: "#4a2a4a" }}>表現力・察し力・告白力</p>
               </div>
             </Link>
             <Link
               href="/commu"
-              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-              style={{ border: "1px solid rgba(14,165,233,0.2)" }}
+              className="flex-1 flex items-center gap-3 p-4 rounded-xl transition-all hover:scale-[1.02]"
+              style={{ background: "rgba(14,165,233,0.06)", border: "1px solid rgba(14,165,233,0.15)" }}
             >
-              <span className="text-xl">💬</span>
+              <span>💬</span>
               <div>
-                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>コミュ力偏差値テスト</p>
-                <p className="text-xs" style={{ color: "#1a3a55" }}>コミュ力を5軸で診断 → SSI研究ベース</p>
+                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>コミュ力偏差値</p>
+                <p className="text-xs" style={{ color: "#1a3a55" }}>聞き方・場の読み・開示力</p>
               </div>
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-xs leading-relaxed" style={{ color: "#6a4a8a" }}>
-          設問は社交不安尺度・孤独親和性研究・Big Fiveをもとに設計。結果は保存されません。
-        </p>
+        {/* フッター */}
+        <div className="flex items-center justify-between pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+          <p className="text-xs" style={{ color: "#2a1a4a" }}>結果は保存されません</p>
+          <div className="flex gap-4">
+            <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer"
+              className="text-xs transition-colors hover:text-white" style={{ color: "#2a1a4a" }}>
+              @Yoko_ai_dev
+            </a>
+            <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer"
+              className="text-xs transition-colors hover:text-white" style={{ color: "#2a1a4a" }}>
+              Portfolio
+            </a>
+          </div>
+        </div>
       </div>
-
-      <footer className="relative z-10 w-full text-center py-8" style={{ color: "#2a1a4a" }}>
-        <p className="text-xs">
-          作成:{" "}
-          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">
-            @Yoko_ai_dev
-          </a>
-          {" · "}
-          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">
-            Portfolio
-          </a>
-        </p>
-      </footer>
     </main>
   );
 }
