@@ -106,7 +106,7 @@ export default function InkaQuizPage() {
             style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
             key={q.id}
           >
-            <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#a855f7" }}>
+            <p className="text-xs font-bold mb-3" style={{ color: "#a855f7" }}>
               Q.{current + 1}
             </p>
             <p

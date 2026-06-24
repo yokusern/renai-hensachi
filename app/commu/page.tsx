@@ -30,19 +30,10 @@ export default function CommuHome() {
       className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #0a1628 0%, #060e1c 60%, #060b15 100%)" }}
     >
-      {/* ambient glow */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl" style={{ background: "#0ea5e9", opacity: 0.05 }} />
-        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl" style={{ background: "#7c3aed", opacity: 0.05 }} />
-      </div>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 pb-24">
+      <div className="max-w-3xl mx-auto px-6 pt-20 pb-24">
 
         {/* ヒーロー — 左揃え + CTA先出し */}
         <div className="mb-16">
-          <p className="text-xs font-mono tracking-[0.3em] uppercase mb-8" style={{ color: "#1a4a6a" }}>
-            COMMUNICATION
-          </p>
 
           <h1 className="font-black leading-[0.9] tracking-tight mb-6" style={{ fontSize: "clamp(48px, 9vw, 80px)", color: "#e8f4ff" }}>
             コミュ力は<br />
@@ -57,10 +48,9 @@ export default function CommuHome() {
 
           <Link
             href="/commu/quiz"
-            className="inline-flex items-center gap-3 font-bold px-8 py-4 text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="inline-flex items-center gap-3 font-bold px-8 py-4 text-white transition-opacity duration-200 hover:opacity-85 active:opacity-70"
             style={{
-              background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
-              boxShadow: "0 8px 32px rgba(14,165,233,0.35)",
+              background: "#0284c7",
               borderRadius: "14px",
               fontSize: "15px",
             }}
@@ -75,8 +65,8 @@ export default function CommuHome() {
 
         {/* 5軸 — 縦リスト、スコアバー風テイク */}
         <div className="mb-14">
-          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-6" style={{ color: "#1a4a6a" }}>
-            DIAGNOSIS AXES
+          <p className="text-xs font-bold mb-6" style={{ color: "#2a5a77" }}>
+            測定軸
           </p>
           <div className="space-y-1">
             {AXES.map((ax, i) => (
@@ -85,7 +75,7 @@ export default function CommuHome() {
                 className="flex items-center gap-5 px-5 py-4 rounded-xl"
                 style={{
                   background: i % 2 === 0 ? "rgba(14,165,233,0.04)" : "transparent",
-                  borderLeft: `2px solid rgba(14,165,233,${0.12 + i * 0.04})`,
+                  borderBottom: "1px solid rgba(14,165,233,0.06)",
                 }}
               >
                 <span className="text-xl w-8 text-center shrink-0">{ax.icon}</span>
@@ -106,8 +96,8 @@ export default function CommuHome() {
 
         {/* 偏差値シリーズ — コンパクト */}
         <div className="mb-10">
-          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-4" style={{ color: "#1a3a55" }}>
-            OTHER TESTS
+          <p className="text-xs font-bold mb-4" style={{ color: "#2a4a6a" }}>
+            他のテスト
           </p>
           <div className="flex gap-3">
             <Link

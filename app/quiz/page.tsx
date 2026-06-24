@@ -117,7 +117,7 @@ export default function QuizPage() {
             key={q.id}
           >
             <p
-              className="text-xs font-bold tracking-widest uppercase mb-3"
+              className="text-xs font-bold mb-3"
               style={{ color: "#e91e8c" }}
             >
               Q.{current + 1}

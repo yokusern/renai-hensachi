@@ -104,18 +104,13 @@ export default function CommuResultClient({ params }: Props) {
       className="min-h-screen flex flex-col items-center"
       style={{ background: "linear-gradient(160deg, #0a1628 0%, #060e1c 60%, #060b15 100%)" }}
     >
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#0ea5e9" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: "#7c3aed", opacity: 0.08 }} />
-      </div>
-
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-12">
+      <div className="w-full max-w-2xl mx-auto px-5 py-12">
 
         {/* 偏差値ヒーロー */}
         <div
           className={`text-center mb-10 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <p className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: "#4a7a99" }}>
+          <p className="text-sm font-bold mb-4" style={{ color: "#4a7a99" }}>
             あなたの
           </p>
           <p className="text-base font-bold mb-2" style={{ color: "#93c5e8" }}>
@@ -143,7 +138,7 @@ export default function CommuResultClient({ params }: Props) {
           className="rounded-2xl p-6 mb-6"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: "#4a7a99" }}>
+          <p className="text-xs font-bold mb-4 text-center" style={{ color: "#4a7a99" }}>
             5軸レーダーチャート
           </p>
           <CommuRadarChart
@@ -157,7 +152,7 @@ export default function CommuResultClient({ params }: Props) {
           className="rounded-2xl p-6 mb-6"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "#4a7a99" }}>
+          <p className="text-xs font-bold mb-5" style={{ color: "#4a7a99" }}>
             カテゴリ別スコア
           </p>
           <div className="flex flex-col gap-4">
@@ -192,7 +187,7 @@ export default function CommuResultClient({ params }: Props) {
             className="rounded-2xl p-5"
             style={{ background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)" }}
           >
-            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#0ea5e9" }}>
+            <p className="text-xs font-bold mb-2" style={{ color: "#0ea5e9" }}>
               💪 強み
             </p>
             <p className="text-sm font-bold mb-1" style={{ color: "#e8f4ff" }}>
@@ -206,7 +201,7 @@ export default function CommuResultClient({ params }: Props) {
             className="rounded-2xl p-5"
             style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}
           >
-            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#a78bfa" }}>
+            <p className="text-xs font-bold mb-2" style={{ color: "#a78bfa" }}>
               🌱 伸びしろ
             </p>
             <p className="text-sm font-bold mb-1" style={{ color: "#e8f4ff" }}>
@@ -224,11 +219,8 @@ export default function CommuResultClient({ params }: Props) {
             href={tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base transition-all hover:scale-105 active:scale-95"
-            style={{
-              background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
-              boxShadow: "0 6px 24px rgba(14,165,233,0.35)",
-            }}
+            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base transition-opacity hover:opacity-85 active:opacity-70"
+            style={{ background: "#0284c7" }}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -257,15 +249,15 @@ export default function CommuResultClient({ params }: Props) {
           rel="noopener noreferrer"
           className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
           style={{
-            background: "linear-gradient(135deg, rgba(14,165,233,0.12), rgba(2,132,199,0.06))",
-            border: "1px solid rgba(14,165,233,0.3)",
+            background: "rgba(14,165,233,0.08)",
+            border: "1px solid rgba(14,165,233,0.25)",
             textDecoration: "none",
           }}
         >
           <div className="flex items-start gap-4">
             <div className="text-2xl mt-0.5 shrink-0">📖</div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold tracking-widest uppercase mb-1.5" style={{ color: "#0ea5e9" }}>
+              <p className="text-xs font-bold mb-1.5" style={{ color: "#0ea5e9" }}>
                 このテストで調べた論文が記事になりました
               </p>
               <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "#e8f4ff" }}>
@@ -294,7 +286,7 @@ export default function CommuResultClient({ params }: Props) {
           className="rounded-2xl p-5 mb-8"
           style={{ background: "rgba(233,30,140,0.05)", border: "1px solid rgba(233,30,140,0.15)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-3 text-center" style={{ color: "#7a5a9a" }}>
+          <p className="text-xs font-bold mb-3 text-center" style={{ color: "#7a5a9a" }}>
             偏差値シリーズ
           </p>
           <Link

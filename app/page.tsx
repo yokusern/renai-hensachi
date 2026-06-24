@@ -6,30 +6,13 @@ export default function Hub() {
       className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%)" }}
     >
-      {/* ambient glow */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "#e91e8c", opacity: 0.06 }} />
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 rounded-full blur-3xl" style={{ background: "#0ea5e9", opacity: 0.05 }} />
-        <div className="absolute top-2/3 left-1/2 w-72 h-72 rounded-full blur-3xl" style={{ background: "#a855f7", opacity: 0.05 }} />
-      </div>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 pb-24">
+      <div className="max-w-3xl mx-auto px-6 pt-20 pb-24">
 
         {/* ヒーロー — 左揃え、タイポグラフィ強調 */}
         <div className="mb-20">
-          <p className="text-xs font-mono tracking-[0.3em] uppercase mb-8" style={{ color: "#4a4a6a" }}>
-            HENSACHI SERIES
-          </p>
-
           <h1 className="font-black leading-[0.9] tracking-tight mb-8" style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}>
             自分を<br />
-            <span style={{
-              background: "linear-gradient(135deg, #e91e8c 0%, #a855f7 50%, #0ea5e9 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}>
-              数値化
-            </span>する
+            <span style={{ color: "#e91e8c" }}>数値化</span>する
           </h1>
 
           <p className="text-sm max-w-md leading-loose" style={{ color: "#4a4a6a" }}>

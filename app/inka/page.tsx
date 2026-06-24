@@ -30,19 +30,10 @@ export default function InkaHome() {
       className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #120826 0%, #08051a 60%, #060318 100%)" }}
     >
-      {/* ambient glow */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full blur-3xl" style={{ background: "#a855f7", opacity: 0.05 }} />
-        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl" style={{ background: "#6d28d9", opacity: 0.06 }} />
-      </div>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 pb-24">
+      <div className="max-w-3xl mx-auto px-6 pt-20 pb-24">
 
         {/* ヒーロー — 極大タイポグラフィ + 左揃え */}
         <div className="mb-16">
-          <p className="text-xs font-mono tracking-[0.3em] uppercase mb-8" style={{ color: "#3a1a5a" }}>
-            INTROVERTED TYPE
-          </p>
 
           {/* 極大タイポグラフィ — 意外な要素 */}
           <div className="mb-6">
@@ -69,10 +60,9 @@ export default function InkaHome() {
 
           <Link
             href="/inka/quiz"
-            className="inline-flex items-center gap-3 font-bold px-8 py-4 text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="inline-flex items-center gap-3 font-bold px-8 py-4 text-white transition-opacity duration-200 hover:opacity-85 active:opacity-70"
             style={{
-              background: "linear-gradient(135deg, #a855f7, #7c3aed)",
-              boxShadow: "0 8px 32px rgba(168,85,247,0.35)",
+              background: "#9333ea",
               borderRadius: "14px",
               fontSize: "15px",
             }}
@@ -87,8 +77,8 @@ export default function InkaHome() {
 
         {/* 5軸 — 番号付き縦リスト、グリッドを使わない */}
         <div className="mb-14">
-          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-6" style={{ color: "#3a1a5a" }}>
-            DIAGNOSIS AXES
+          <p className="text-xs font-bold mb-6" style={{ color: "#4a2a7a" }}>
+            測定軸
           </p>
           <div className="space-y-0">
             {AXES.map((ax) => (
@@ -113,8 +103,8 @@ export default function InkaHome() {
 
         {/* 偏差値シリーズ — コンパクト */}
         <div className="mb-10">
-          <p className="text-xs font-mono tracking-[0.25em] uppercase mb-4" style={{ color: "#2a1a4a" }}>
-            OTHER TESTS
+          <p className="text-xs font-bold mb-4" style={{ color: "#3a2a5a" }}>
+            他のテスト
           </p>
           <div className="flex gap-3">
             <Link
