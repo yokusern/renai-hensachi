@@ -107,7 +107,7 @@ export default function ResultClient({ params }: Props) {
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#e91e8c" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl" style={{ background: "#7c3aed" }} />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: "#7c3aed", opacity: 0.08 }} />
       </div>
 
       <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-12">
