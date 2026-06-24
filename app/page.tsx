@@ -6,12 +6,12 @@ const TESTS = [
     startHref: "/quiz",
     emoji: "💘",
     title: "恋愛偏差値テスト",
-    desc: "恋愛力を偏差値で数値化",
+    desc: "なぜ恋愛がうまくいかないか、5軸の数値で見える",
     accent: "#e91e8c",
     accentBg: "rgba(233,30,140,0.12)",
     accentBorder: "rgba(233,30,140,0.25)",
     accentGlow: "rgba(233,30,140,0.4)",
-    categories: ["コミュニケーション力", "自己理解度", "相手への理解度", "行動力", "メンタル安定度"],
+    categories: ["表現力", "傾聴力", "察し力", "告白力", "依存度"],
     research: "Gottman / ECR-R / 感情知性尺度",
   },
   {
@@ -19,7 +19,7 @@ const TESTS = [
     startHref: "/commu/quiz",
     emoji: "💬",
     title: "コミュ力偏差値テスト",
-    desc: "コミュ力を偏差値で数値化",
+    desc: "話す量じゃない。どの軸で詰まっているか数値で分かる",
     accent: "#0ea5e9",
     accentBg: "rgba(14,165,233,0.12)",
     accentBorder: "rgba(14,165,233,0.25)",
@@ -32,7 +32,7 @@ const TESTS = [
     startHref: "/inka/quiz",
     emoji: "🌙",
     title: "陰キャ偏差値テスト",
-    desc: "陰キャ度を偏差値で数値化",
+    desc: "人見知り・ぼっち耐性・趣味没頭。自分がどのタイプか分類される",
     accent: "#a855f7",
     accentBg: "rgba(168,85,247,0.12)",
     accentBorder: "rgba(168,85,247,0.25)",
@@ -49,8 +49,8 @@ export default function Hub() {
       style={{ background: "linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%)" }}
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/5 w-96 h-96 rounded-full opacity-8 blur-3xl" style={{ background: "#e91e8c" }} />
-        <div className="absolute bottom-1/3 right-1/5 w-80 h-80 rounded-full opacity-8 blur-3xl" style={{ background: "#0ea5e9" }} />
+        <div className="absolute top-1/4 left-1/5 w-96 h-96 rounded-full blur-3xl" style={{ background: "#e91e8c", opacity: 0.08 }} />
+        <div className="absolute bottom-1/3 right-1/5 w-80 h-80 rounded-full blur-3xl" style={{ background: "#0ea5e9", opacity: 0.08 }} />
       </div>
 
       <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-16">
@@ -75,7 +75,7 @@ export default function Hub() {
           </h1>
 
           <p className="text-base leading-relaxed" style={{ color: "#5a5a7a" }}>
-            25問の心理学ベース診断で、自分を数値化しよう。
+            心理学論文をもとに設計した25問。偏差値と5軸レーダーで、自分の傾向が数値になる。
           </p>
         </div>
 

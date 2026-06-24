@@ -294,7 +294,7 @@ export default function CommuResultClient({ params }: Props) {
           className="rounded-2xl p-5 mb-8"
           style={{ background: "rgba(233,30,140,0.05)", border: "1px solid rgba(233,30,140,0.15)" }}
         >
-          <p className="text-xs font-bold tracking-widest uppercase mb-3 text-center" style={{ color: "#6b3a5a" }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3 text-center" style={{ color: "#7a5a9a" }}>
             偏差値シリーズ
           </p>
           <Link
@@ -304,7 +304,7 @@ export default function CommuResultClient({ params }: Props) {
             <span className="text-2xl">💘</span>
             <div className="flex-1">
               <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
-              <p className="text-xs" style={{ color: "#4a3a5a" }}>恋愛力を5軸で偏差値化 →</p>
+              <p className="text-xs" style={{ color: "#8a5a7a" }}>表現力・察し力・告白力を5軸で診断 →</p>
             </div>
           </Link>
           <Link
@@ -315,7 +315,7 @@ export default function CommuResultClient({ params }: Props) {
             <span className="text-2xl">🌙</span>
             <div className="flex-1">
               <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
-              <p className="text-xs" style={{ color: "#3a2a5a" }}>人見知り・ぼっち耐性・陰の趣味を偏差値化 →</p>
+              <p className="text-xs" style={{ color: "#7a5a8a" }}>人見知り・ぼっち耐性・陰の趣味を診断 →</p>
             </div>
           </Link>
         </div>

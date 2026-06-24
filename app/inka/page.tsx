@@ -32,7 +32,7 @@ export default function InkaHome() {
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#a855f7" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl" style={{ background: "#6d28d9" }} />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: "#6d28d9", opacity: 0.08 }} />
       </div>
 
       <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-16">
@@ -44,19 +44,24 @@ export default function InkaHome() {
             🌙 陰キャ度診断
           </div>
 
+          <div className="inline-flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-full mb-4" style={{ background: "rgba(168,85,247,0.1)", color: "#c084fc", border: "1px solid rgba(168,85,247,0.2)" }}>
+            日本人の約6割が陰キャ傾向と回答
+          </div>
+
           <h1
             className="text-5xl sm:text-6xl font-black mb-5 leading-tight"
             style={{ letterSpacing: "-0.03em", color: "#f0e8ff" }}
           >
-            陰キャ偏差値
+            自分がどんな
+            <span style={{ color: "#a855f7" }}>陰キャ</span>か
             <br />
-            <span style={{ color: "#a855f7" }}>テスト</span>
+            分類される
           </h1>
 
-          <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#5a4a7a" }}>
-            25問に答えるだけで、あなたの陰キャ度を偏差値で数値化。
+          <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#7a5a9a" }}>
+            人見知り・ぼっち耐性・趣味没頭の5軸で偏差値化。
             <br />
-            5軸のレーダーチャートで「どんな陰キャか」を可視化します。
+            25問・約5分・無料。
           </p>
 
           <Link
@@ -71,9 +76,6 @@ export default function InkaHome() {
             <span className="text-xl">→</span>
           </Link>
 
-          <p className="mt-4 text-sm" style={{ color: "#3a2a5a" }}>
-            所要時間 約5分 ・ 全25問 ・ 無料
-          </p>
         </div>
 
         <div
@@ -135,10 +137,8 @@ export default function InkaHome() {
           </div>
         </div>
 
-        <p className="text-center text-xs leading-relaxed" style={{ color: "#2a1a4a" }}>
-          調査根拠: 約6割が陰キャ傾向（20%「陰キャ」+ 39%「どちらかといえば陰キャ」と回答）。
-          <br />
-          設問は社交不安尺度・孤独親和性研究・Big Fiveをもとに設計。
+        <p className="text-center text-xs leading-relaxed" style={{ color: "#6a4a8a" }}>
+          設問は社交不安尺度・孤独親和性研究・Big Fiveをもとに設計。結果は保存されません。
         </p>
       </div>
 

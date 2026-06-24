@@ -32,7 +32,7 @@ export default function CommuHome() {
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "#0ea5e9" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl" style={{ background: "#7c3aed" }} />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: "#7c3aed", opacity: 0.08 }} />
       </div>
 
       <div className="relative z-10 w-full max-w-2xl mx-auto px-5 py-16">
@@ -54,9 +54,9 @@ export default function CommuHome() {
           </h1>
 
           <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#4a7a99" }}>
-            25問に答えるだけで、あなたのコミュ力を偏差値で数値化。
+            話す量じゃない。聞き方・場の読み・つながり方に差がある。
             <br />
-            5軸のレーダーチャートで強みと伸びしろを可視化します。
+            どの軸が詰まっているか、25問で具体的に分かる。
           </p>
 
           <Link
@@ -67,13 +67,8 @@ export default function CommuHome() {
               boxShadow: "0 8px 32px rgba(14,165,233,0.4)",
             }}
           >
-            診断スタート
-            <span className="text-xl">→</span>
+            診断スタート → 全25問・約5分・無料
           </Link>
-
-          <p className="mt-4 text-sm" style={{ color: "#2a5a77" }}>
-            所要時間 約5分 ・ 全25問 ・ 無料
-          </p>
         </div>
 
         <div
@@ -109,17 +104,30 @@ export default function CommuHome() {
           <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: "#2a5a77" }}>
             偏差値シリーズ
           </p>
-          <Link
-            href="/"
-            className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-            style={{ border: "1px solid rgba(233,30,140,0.2)" }}
-          >
-            <span className="text-2xl">💘</span>
-            <div>
-              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
-              <p className="text-xs" style={{ color: "#4a3a5a" }}>恋愛力を5軸で診断 → 試してみる</p>
-            </div>
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/"
+              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
+              style={{ border: "1px solid rgba(233,30,140,0.2)" }}
+            >
+              <span className="text-xl">💘</span>
+              <div>
+                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
+                <p className="text-xs" style={{ color: "#6a4a6a" }}>表現力・察し力・告白力を5軸で診断 →</p>
+              </div>
+            </Link>
+            <Link
+              href="/inka"
+              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
+              style={{ border: "1px solid rgba(168,85,247,0.2)" }}
+            >
+              <span className="text-xl">🌙</span>
+              <div>
+                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
+                <p className="text-xs" style={{ color: "#5a3a7a" }}>人見知り度・ぼっち耐性・陰の趣味力を診断 →</p>
+              </div>
+            </Link>
+          </div>
         </div>
 
         <p className="text-center text-xs leading-relaxed" style={{ color: "#1a3a55" }}>
