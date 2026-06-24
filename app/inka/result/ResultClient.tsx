@@ -248,6 +248,46 @@ export default function InkaResultClient({ params }: Props) {
           </Link>
         </div>
 
+        {/* note記事CTA */}
+        {/* TODO: href を実際の記事URLに差し替える（例: https://note.com/zen_ai_logic/n/xxxx）*/}
+        <a
+          href="https://note.com/zen_ai_logic"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+          style={{
+            background: "linear-gradient(135deg, rgba(168,85,247,0.12), rgba(109,40,217,0.06))",
+            border: "1px solid rgba(168,85,247,0.3)",
+            textDecoration: "none",
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="text-2xl mt-0.5 shrink-0">📖</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold tracking-widest uppercase mb-1.5" style={{ color: "#a855f7" }}>
+                このテストで調べた論文が記事になりました
+              </p>
+              <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "#f0e8ff" }}>
+                人見知りが治らない理由を、論文と実生活から考えた
+              </p>
+              <p className="text-xs mb-3 leading-relaxed" style={{ color: "#7a5a99" }}>
+                頑張るほどしんどくなる理由。心理学研究5本が示していたのは、治し方よりも先にある話だった。
+              </p>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: "rgba(168,85,247,0.2)", color: "#c084fc" }}
+                >
+                  ¥980
+                </span>
+                <span className="text-xs font-bold" style={{ color: "#a855f7" }}>
+                  noteで読む →
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+
         {/* 偏差値シリーズCTA */}
         <div
           className="rounded-2xl p-5 mb-8"

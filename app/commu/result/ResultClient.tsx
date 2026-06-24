@@ -248,6 +248,46 @@ export default function CommuResultClient({ params }: Props) {
           </Link>
         </div>
 
+        {/* note記事CTA */}
+        {/* TODO: href を実際の記事URLに差し替える（例: https://note.com/zen_ai_logic/n/xxxx）*/}
+        <a
+          href="https://note.com/zen_ai_logic"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+          style={{
+            background: "linear-gradient(135deg, rgba(14,165,233,0.12), rgba(2,132,199,0.06))",
+            border: "1px solid rgba(14,165,233,0.3)",
+            textDecoration: "none",
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="text-2xl mt-0.5 shrink-0">📖</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold tracking-widest uppercase mb-1.5" style={{ color: "#0ea5e9" }}>
+                このテストで調べた論文が記事になりました
+              </p>
+              <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "#e8f4ff" }}>
+                コミュ力の差は「聞き方」にあった
+              </p>
+              <p className="text-xs mb-3 leading-relaxed" style={{ color: "#4a7a99" }}>
+                話す量じゃない。返し方の技術だった。5つの心理学研究 × 場面別の会話例 + 7日間トレーニング付き。
+              </p>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: "rgba(14,165,233,0.2)", color: "#7dd3f0" }}
+                >
+                  ¥980
+                </span>
+                <span className="text-xs font-bold" style={{ color: "#0ea5e9" }}>
+                  noteで読む →
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+
         {/* 恋愛偏差値テストへの誘導 */}
         <div
           className="rounded-2xl p-5 mb-8"

@@ -250,6 +250,46 @@ export default function ResultClient({ params }: Props) {
           </Link>
         </div>
 
+        {/* note記事CTA */}
+        {/* TODO: href を実際の記事URLに差し替える（例: https://note.com/zen_ai_logic/n/xxxx）*/}
+        <a
+          href="https://note.com/zen_ai_logic"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+          style={{
+            background: "linear-gradient(135deg, rgba(233,30,140,0.10), rgba(194,24,91,0.05))",
+            border: "1px solid rgba(233,30,140,0.25)",
+            textDecoration: "none",
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="text-2xl mt-0.5 shrink-0">📖</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold tracking-widest uppercase mb-1.5" style={{ color: "#e91e8c" }}>
+                偏差値シリーズの研究をnoteで公開中
+              </p>
+              <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "#f0e8ff" }}>
+                人見知り・コミュ力・恋愛を、心理学論文から考えた記事
+              </p>
+              <p className="text-xs mb-3 leading-relaxed" style={{ color: "#6b5b7b" }}>
+                テストを作るために読んだ論文と、自分の実生活を重ねて書いた記事シリーズ。
+              </p>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: "rgba(233,30,140,0.18)", color: "#f472b6" }}
+                >
+                  各¥980
+                </span>
+                <span className="text-xs font-bold" style={{ color: "#e91e8c" }}>
+                  noteで読む →
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+
         {/* コミュ力テストへの誘導 */}
         <div
           className="rounded-2xl p-5 mb-8"
