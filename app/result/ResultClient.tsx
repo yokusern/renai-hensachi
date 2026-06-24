@@ -83,9 +83,9 @@ export default function ResultClient({ params }: Props) {
   }, [deviation]);
 
   // Xシェアテキスト
-  const shareText = `恋愛偏差値【${deviation}】でした${rankEmoji}\n${rank}｜${CATEGORY_LABELS[strengthKey]}が得意で、${CATEGORY_LABELS[weaknessKey]}が課題みたい…\n#恋愛偏差値テスト`;
-  const shareUrl = `https://renai-hensachi.vercel.app/result?${new URLSearchParams(params).toString()}`;
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+  const scores5 = `コミュ${normalizedScores.communication} / 自己${normalizedScores.selfAwareness} / 共感${normalizedScores.empathy} / 行動${normalizedScores.initiative} / 安定${normalizedScores.mentalStability}`;
+  const shareText = `恋愛偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app\n\n#恋愛偏差値テスト #個人開発`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;
 

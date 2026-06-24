@@ -81,9 +81,9 @@ export default function CommuResultClient({ params }: Props) {
     return () => cancelAnimationFrame(id);
   }, [deviation]);
 
-  const shareText = `コミュ力偏差値【${deviation}】でした${rankEmoji}\n${rank}｜${CATEGORY_LABELS[strengthKey]}が得意で、${CATEGORY_LABELS[weaknessKey]}が課題みたい…\n#コミュ力偏差値テスト #個人開発`;
-  const shareUrl = `https://renai-hensachi.vercel.app/commu/result?${new URLSearchParams(params).toString()}`;
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+  const scores5 = `表現${normalizedScores.expression} / 傾聴${normalizedScores.listening} / 場読${normalizedScores.awareness} / 開示${normalizedScores.disclosure} / 維持${normalizedScores.building}`;
+  const shareText = `コミュ力偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/commu\n\n#コミュ力偏差値テスト #個人開発`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;
 
