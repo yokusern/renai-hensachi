@@ -82,9 +82,9 @@ export default function ResultClient({ params }: Props) {
     return () => cancelAnimationFrame(id);
   }, [deviation]);
 
-  // Xシェアテキスト
-  const scores5 = `コミュ${normalizedScores.communication} / 自己${normalizedScores.selfAwareness} / 共感${normalizedScores.empathy} / 行動${normalizedScores.initiative} / 安定${normalizedScores.mentalStability}`;
-  const shareText = `恋愛偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app\n\n#恋愛偏差値テスト #個人開発`;
+  const toGrade = (s: number) => s >= 70 ? 'A' : s >= 55 ? 'B' : s >= 40 ? 'C' : 'D';
+  const scores5 = `表現力${toGrade(normalizedScores.communication)} / 傾聴力${toGrade(normalizedScores.selfAwareness)} / 察し力${toGrade(normalizedScores.empathy)} / 告白力${toGrade(normalizedScores.initiative)} / 依存度${toGrade(normalizedScores.mentalStability)}`;
+  const shareText = `恋愛偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app`;
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;

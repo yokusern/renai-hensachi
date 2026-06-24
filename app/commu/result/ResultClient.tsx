@@ -81,8 +81,9 @@ export default function CommuResultClient({ params }: Props) {
     return () => cancelAnimationFrame(id);
   }, [deviation]);
 
-  const scores5 = `表現${normalizedScores.expression} / 傾聴${normalizedScores.listening} / 場読${normalizedScores.awareness} / 開示${normalizedScores.disclosure} / 維持${normalizedScores.building}`;
-  const shareText = `コミュ力偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/commu\n\n#コミュ力偏差値テスト #個人開発`;
+  const toGrade = (s: number) => s >= 70 ? 'A' : s >= 55 ? 'B' : s >= 40 ? 'C' : 'D';
+  const scores5 = `表現力${toGrade(normalizedScores.expression)} / 傾聴力${toGrade(normalizedScores.listening)} / 場の読み${toGrade(normalizedScores.awareness)} / 自己開示力${toGrade(normalizedScores.disclosure)} / 関係維持力${toGrade(normalizedScores.building)}`;
+  const shareText = `コミュ力偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/commu`;
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;

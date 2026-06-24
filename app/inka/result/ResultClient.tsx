@@ -81,8 +81,9 @@ export default function InkaResultClient({ params }: Props) {
     return () => cancelAnimationFrame(id);
   }, [deviation]);
 
-  const scores5 = `人見知${normalizedScores.hitomishiri} / ぼっち${normalizedScores.bocchi} / 趣味${normalizedScores.hobbies} / 群れ${normalizedScores.groupAversion} / 目立${normalizedScores.invisible}`;
-  const shareText = `陰キャ偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/inka\n\n#陰キャ偏差値テスト #個人開発`;
+  const toGrade = (s: number) => s >= 70 ? 'A' : s >= 55 ? 'B' : s >= 40 ? 'C' : 'D';
+  const scores5 = `人見知り度${toGrade(normalizedScores.hitomishiri)} / ぼっち耐性${toGrade(normalizedScores.bocchi)} / 陰の趣味力${toGrade(normalizedScores.hobbies)} / 群れ苦手度${toGrade(normalizedScores.groupAversion)} / 目立ちたくなさ${toGrade(normalizedScores.invisible)}`;
+  const shareText = `陰キャ偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/inka`;
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;
