@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/inka-scoring";
 import type { CategoryKey } from "@/data/inka-questions";
 
@@ -324,6 +325,8 @@ export default function InkaResultClient({ params }: Props) {
           </a>
         </p>
       </div>
+      {/* 陰キャテストのテーマカラー: 紫系。8秒後に表示 */}
+      <GhostCommentWidget color="#A855F7" delay={8} />
     </main>
   );
 }

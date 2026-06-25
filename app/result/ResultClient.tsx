@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/scoring";
 import type { CategoryKey } from "@/data/questions";
 
@@ -325,6 +326,8 @@ export default function ResultClient({ params }: Props) {
           </a>
         </p>
       </div>
+      {/* 恋愛テストのテーマカラー: ピンク系。8秒後に表示（結果を読み終えたタイミング） */}
+      <GhostCommentWidget color="#EC4899" delay={8} />
     </main>
   );
 }

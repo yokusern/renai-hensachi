@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/commu-scoring";
 import type { CategoryKey } from "@/data/commu-questions";
 
@@ -323,6 +324,8 @@ export default function CommuResultClient({ params }: Props) {
           </a>
         </p>
       </div>
+      {/* コミュ力テストのテーマカラー: 青系。8秒後に表示 */}
+      <GhostCommentWidget color="#3B82F6" delay={8} />
     </main>
   );
 }
