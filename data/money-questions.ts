@@ -106,12 +106,12 @@ export const moneyQuestions: GenericQuestion[] = [
   },
   {
     id: "mn10",
-    text: "「年利5%で30年間、毎月3万円積み立てたら総額いくらになるか」大まかに計算できる？",
+    text: "年利5%で30年間、毎月3万円を複利で積み立てた場合の最終積立額は？",
     options: [
-      opt("複利計算の公式かシミュレーターを使って計算できる（約2,500万円）", "investment", 3),
-      opt("単純計算（3万×12×30＝1,080万）はできるが複利は考慮していない", "investment", 2),
-      opt("計算方法が分からない", "investment", 1),
-      opt("考えたことがない", "investment", 0),
+      opt("約2,500万円", "investment", 3),
+      opt("約1,800万円", "investment", 0),
+      opt("約1,200万円", "investment", 0),
+      opt("約3,600万円", "investment", 0),
     ],
   },
 
@@ -128,12 +128,12 @@ export const moneyQuestions: GenericQuestion[] = [
   },
   {
     id: "mn12",
-    text: "消費者金融・カードローンの金利水準（年15〜20%程度）を知っており、利息を計算できる？",
+    text: "消費者金融やカードローンの一般的な金利水準はどの程度ですか？",
     options: [
-      opt("知っており、100万円借りたら年間いくら払うか計算できる", "debt", 3),
-      opt("「高い」とは知っているが、具体的な数字は分からない", "debt", 2),
-      opt("なんとなく危ないとは思っているが、よく知らない", "debt", 1),
-      opt("あまり知らない", "debt", 0),
+      opt("年15〜20%程度", "debt", 3),
+      opt("年5〜10%程度", "debt", 0),
+      opt("年1〜3%程度", "debt", 0),
+      opt("よくわからない", "debt", 0),
     ],
   },
   {
@@ -160,7 +160,7 @@ export const moneyQuestions: GenericQuestion[] = [
     id: "mn15",
     text: "100万円を年利1.5%で1年借りた場合の利息はいくらか、すぐに計算できる？",
     options: [
-      opt("1万5千円（100万×0.015）と即答できる", "debt", 3),
+      opt("1万5千円", "debt", 3),
       opt("計算方法は知っているが、すぐには答えられない", "debt", 2),
       opt("計算方法が分からない", "debt", 1),
       opt("考えたことがない", "debt", 0),

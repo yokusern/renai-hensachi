@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const CATEGORIES = [
   {
@@ -86,6 +89,98 @@ const CATEGORIES = [
   },
 ];
 
+function hexToRgb(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r},${g},${b}`;
+}
+
+function TestCard({ t, size = "sm" }: { t: (typeof CATEGORIES)[0]["tests"][0]; size?: "sm" | "lg" }) {
+  const rgb = hexToRgb(t.color);
+  const padding = size === "lg" ? "p-8" : "p-6";
+  const titleSize = size === "lg" ? "text-2xl" : "text-lg";
+  const descColor = size === "lg" ? "#6a4a6a" : "#3a3a5a";
+
+  return (
+    <motion.div
+      whileHover={{ y: -4, boxShadow: `0 12px 32px rgba(${rgb},0.18)` }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="rounded-2xl"
+      style={{
+        background: `linear-gradient(135deg, rgba(${rgb},${size === "lg" ? "0.1" : "0.08"}) 0%, rgba(${rgb},0.03) 100%)`,
+        border: `1px solid rgba(${rgb},${size === "lg" ? "0.28" : "0.2"})`,
+      }}
+    >
+      <Link href={t.href} className={`block ${padding}`}>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <p className={`${titleSize} font-black mb-2`} style={{ color: "#f0eeff" }}>
+              {t.emoji} {t.name}
+            </p>
+            <p className={`${size === "lg" ? "text-sm mb-5" : "text-xs mb-4 leading-relaxed"}`} style={{ color: descColor }}>
+              {t.desc}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {t.axes.map((a) => (
+                <span
+                  key={a}
+                  className={`${size === "lg" ? "text-xs px-2.5 py-1 font-medium" : "text-[10px] px-2 py-0.5"} rounded-full`}
+                  style={{ background: `rgba(${rgb},0.12)`, color: t.color }}
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+          </div>
+          <p className="text-xs font-mono shrink-0 mt-1" style={{ color: size === "lg" ? "#4a2a4a" : "#3a3a5a" }}>
+            {size === "lg" ? "25問 · 5分" : "25問"}
+          </p>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
+  const rgb = hexToRgb(t.color);
+
+  return (
+    <motion.div
+      whileHover={{ y: -4, boxShadow: `0 12px 32px rgba(${rgb},0.18)` }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="rounded-2xl"
+      style={{
+        background: `linear-gradient(135deg, rgba(${rgb},0.08) 0%, rgba(${rgb},0.03) 100%)`,
+        border: `1px solid rgba(${rgb},0.2)`,
+      }}
+    >
+      <Link href={t.href} className="block p-6">
+        <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
+          {t.emoji} {t.name}
+        </p>
+        <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
+          {t.desc}
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {t.axes.map((a) => (
+            <span
+              key={a}
+              className="text-[10px] px-2 py-0.5 rounded-full"
+              style={{ background: `rgba(${rgb},0.1)`, color: t.color }}
+            >
+              {a}
+            </span>
+          ))}
+          <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
+            +2
+          </span>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function Hub() {
   return (
     <main
@@ -99,7 +194,10 @@ export default function Hub() {
           <p className="text-xs font-mono tracking-widest mb-4" style={{ color: "#3a3a5a" }}>
             HENSACHI SERIES — 7 TESTS
           </p>
-          <h1 className="font-black leading-[0.9] tracking-tight mb-6" style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}>
+          <h1
+            className="font-black leading-[0.9] tracking-tight mb-6"
+            style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}
+          >
             自分を<br />
             <span style={{ color: "#e91e8c" }}>数値化</span>する
           </h1>
@@ -117,129 +215,20 @@ export default function Hub() {
               </p>
 
               {cat.tests.length === 1 ? (
-                /* 1テスト: フルwidthカード */
-                <Link
-                  href={cat.tests[0].href}
-                  className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
-                  style={{
-                    background: `linear-gradient(135deg, rgba(${hexToRgb(cat.tests[0].color)},0.08) 0%, rgba(${hexToRgb(cat.tests[0].color)},0.03) 100%)`,
-                    border: `1px solid rgba(${hexToRgb(cat.tests[0].color)},0.22)`,
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-xl font-black mb-2" style={{ color: "#f0eeff" }}>
-                        {cat.tests[0].emoji} {cat.tests[0].name}
-                      </p>
-                      <p className="text-xs mb-4 leading-relaxed" style={{ color: "#4a4a6a" }}>
-                        {cat.tests[0].desc}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {cat.tests[0].axes.map((a) => (
-                          <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
-                            style={{ background: `rgba(${hexToRgb(cat.tests[0].color)},0.12)`, color: cat.tests[0].color }}>
-                            {a}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-xs font-mono shrink-0 mt-1" style={{ color: "#3a3a5a" }}>25問</p>
-                  </div>
-                </Link>
+                <TestCard t={cat.tests[0]} size="sm" />
               ) : cat.tests[0].primary ? (
-                /* 恋愛: primary大 + 2列小 */
                 <div className="space-y-3">
-                  <Link
-                    href={cat.tests[0].href}
-                    className="group block rounded-2xl p-8 transition-all duration-300 hover:scale-[1.01]"
-                    style={{
-                      background: `linear-gradient(135deg, rgba(${hexToRgb(cat.tests[0].color)},0.1) 0%, rgba(${hexToRgb(cat.tests[0].color)},0.04) 100%)`,
-                      border: `1px solid rgba(${hexToRgb(cat.tests[0].color)},0.28)`,
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="text-2xl font-black mb-2" style={{ color: "#f0eeff" }}>
-                          {cat.tests[0].emoji} {cat.tests[0].name}
-                        </p>
-                        <p className="text-sm mb-5" style={{ color: "#6a4a6a" }}>
-                          {cat.tests[0].desc}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {cat.tests[0].axes.map((a) => (
-                            <span key={a} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                              style={{ background: `rgba(${hexToRgb(cat.tests[0].color)},0.12)`, color: cat.tests[0].color }}>
-                              {a}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-xs font-mono shrink-0 mt-1" style={{ color: "#4a2a4a" }}>25問 · 5分</p>
-                    </div>
-                  </Link>
+                  <TestCard t={cat.tests[0]} size="lg" />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {cat.tests.slice(1).map((t) => (
-                      <Link
-                        key={t.href}
-                        href={t.href}
-                        className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
-                        style={{
-                          background: `linear-gradient(135deg, rgba(${hexToRgb(t.color)},0.08) 0%, rgba(${hexToRgb(t.color)},0.03) 100%)`,
-                          border: `1px solid rgba(${hexToRgb(t.color)},0.2)`,
-                        }}
-                      >
-                        <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
-                          {t.emoji} {t.name}
-                        </p>
-                        <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
-                          {t.desc}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {t.axes.map((a) => (
-                            <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
-                              style={{ background: `rgba(${hexToRgb(t.color)},0.1)`, color: t.color }}>
-                              {a}
-                            </span>
-                          ))}
-                          <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
-                            +2
-                          </span>
-                        </div>
-                      </Link>
+                      <SmallCard key={t.href} t={t} />
                     ))}
                   </div>
                 </div>
               ) : (
-                /* 2テスト: 2列 */
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {cat.tests.map((t) => (
-                    <Link
-                      key={t.href}
-                      href={t.href}
-                      className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
-                      style={{
-                        background: `linear-gradient(135deg, rgba(${hexToRgb(t.color)},0.08) 0%, rgba(${hexToRgb(t.color)},0.03) 100%)`,
-                        border: `1px solid rgba(${hexToRgb(t.color)},0.2)`,
-                      }}
-                    >
-                      <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
-                        {t.emoji} {t.name}
-                      </p>
-                      <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
-                        {t.desc}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {t.axes.map((a) => (
-                          <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
-                            style={{ background: `rgba(${hexToRgb(t.color)},0.1)`, color: t.color }}>
-                            {a}
-                          </span>
-                        ))}
-                        <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
-                          +2
-                        </span>
-                      </div>
-                    </Link>
+                    <SmallCard key={t.href} t={t} />
                   ))}
                 </div>
               )}
@@ -254,12 +243,22 @@ export default function Hub() {
               結果は保存されません。偏差値はN(50,10)正規化スコア。
             </p>
             <div className="flex gap-4">
-              <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer"
-                className="text-xs transition-colors hover:text-white" style={{ color: "#2a2a4a" }}>
+              <a
+                href="https://x.com/Yoko_ai_dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs transition-colors hover:text-white"
+                style={{ color: "#2a2a4a" }}
+              >
                 @Yoko_ai_dev
               </a>
-              <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer"
-                className="text-xs transition-colors hover:text-white" style={{ color: "#2a2a4a" }}>
+              <a
+                href="https://yokoportofolio.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs transition-colors hover:text-white"
+                style={{ color: "#2a2a4a" }}
+              >
                 Portfolio
               </a>
             </div>
@@ -268,11 +267,4 @@ export default function Hub() {
       </div>
     </main>
   );
-}
-
-function hexToRgb(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `${r},${g},${b}`;
 }
