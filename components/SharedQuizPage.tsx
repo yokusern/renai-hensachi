@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import type { GenericQuestion } from "@/lib/generic-types";
@@ -22,6 +22,12 @@ function hexToRgb(hex: string): string {
   return `${r},${g},${b}`;
 }
 
+interface RippleState {
+  key: number;
+  x: number;
+  y: number;
+}
+
 export default function SharedQuizPage({
   questions,
   themeColor,
@@ -35,15 +41,37 @@ export default function SharedQuizPage({
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingNum, setLoadingNum] = useState(50);
+  const [ripples, setRipples] = useState<Record<number, RippleState>>({});
+  const rippleTimers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
 
   const total = questions.length;
   const q = questions[current];
-  const progress = (current / total) * 100;
   const rgb = hexToRgb(themeColor);
 
+  // Background tints slightly as quiz progresses (0% → 4%)
+  const bgAlpha = (current / total) * 0.04;
+
+  const addRipple = (idx: number, e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const key = Date.now();
+    setRipples((prev) => ({ ...prev, [idx]: { key, x, y } }));
+    // clear ripple after animation
+    if (rippleTimers.current[idx]) clearTimeout(rippleTimers.current[idx]);
+    rippleTimers.current[idx] = setTimeout(() => {
+      setRipples((prev) => {
+        const next = { ...prev };
+        delete next[idx];
+        return next;
+      });
+    }, 600);
+  };
+
   const handleSelect = useCallback(
-    (idx: number) => {
+    (idx: number, e: React.MouseEvent<HTMLButtonElement>) => {
       if (busy || loading) return;
+      addRipple(idx, e);
       setSelected(idx);
       setBusy(true);
 
@@ -63,11 +91,14 @@ export default function SharedQuizPage({
           setTimeout(() => {
             clearInterval(iv);
             const params = computeResultParams(next);
-            router.push(`${resultBasePath}/result?${new URLSearchParams(params).toString()}`);
+            router.push(
+              `${resultBasePath}/result?${new URLSearchParams(params).toString()}`
+            );
           }, 1500);
         }
       }, 220);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [busy, loading, answers, current, q, router, total, computeResultParams, resultBasePath]
   );
 
@@ -76,6 +107,8 @@ export default function SharedQuizPage({
     setCurrent((c) => c - 1);
     setSelected(null);
   };
+
+  const progress = (current / total) * 100;
 
   // ── ローディング画面 ──
   if (loading) {
@@ -91,13 +124,20 @@ export default function SharedQuizPage({
         >
           <p
             className="text-sm font-bold mb-6 tracking-widest uppercase"
-            style={{ color: `rgba(${rgb},0.5)`, fontFamily: "'Inter', sans-serif" }}
+            style={{
+              color: `rgba(${rgb},0.5)`,
+              fontFamily: "'Inter', 'Noto Sans JP', sans-serif",
+            }}
           >
             Analyzing...
           </p>
           <div
             className="font-black tabular-nums leading-none mb-4"
-            style={{ fontSize: "clamp(96px,20vw,144px)", color: themeColor, fontFamily: "'Inter', sans-serif" }}
+            style={{
+              fontSize: "clamp(96px,20vw,144px)",
+              color: themeColor,
+              fontFamily: "'Inter', sans-serif",
+            }}
           >
             {loadingNum}
           </div>
@@ -111,16 +151,19 @@ export default function SharedQuizPage({
 
   return (
     <main
-      className="min-h-screen flex flex-col"
-      style={{ background: `rgba(${rgb},0.025)` }}
+      className="min-h-screen flex flex-col transition-colors duration-700"
+      style={{ background: `rgba(${rgb},${bgAlpha})` }}
     >
-      {/* ── Sticky progress bar ── */}
-      <div className="sticky top-0 z-10 w-full" style={{ height: "3px", background: "rgba(0,0,0,0.07)" }}>
+      {/* ── Sticky 3px progress bar ── */}
+      <div
+        className="sticky top-0 z-10 w-full"
+        style={{ height: "3px", background: "rgba(0,0,0,0.07)" }}
+      >
         <motion.div
           style={{ height: "100%", background: themeColor, originX: 0 }}
           initial={false}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       </div>
 
@@ -135,25 +178,36 @@ export default function SharedQuizPage({
               className="text-sm px-4 py-2 rounded-xl transition-all"
               style={{
                 color: current === 0 ? "#d1d5db" : "#6b7280",
-                background: current === 0 ? "transparent" : "rgba(0,0,0,0.04)",
-                border: `1px solid ${current === 0 ? "transparent" : "rgba(0,0,0,0.08)"}`,
+                background:
+                  current === 0 ? "transparent" : "rgba(0,0,0,0.04)",
+                border: `1px solid ${
+                  current === 0 ? "transparent" : "rgba(0,0,0,0.08)"
+                }`,
                 cursor: current === 0 ? "default" : "pointer",
               }}
             >
               ← 戻る
             </button>
 
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 700, color: themeColor }}>
+            <p
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "14px",
+                fontWeight: 700,
+                color: themeColor,
+              }}
+            >
               {String(current + 1).padStart(2, "0")}
               <span style={{ color: "#d1d5db", fontWeight: 400 }}>
-                {" / "}{String(total).padStart(2, "0")}
+                {" / "}
+                {String(total).padStart(2, "0")}
               </span>
             </p>
 
             <div className="w-16" />
           </div>
 
-          {/* ── Question + Options with AnimatePresence ── */}
+          {/* ── Question + Options ── */}
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
@@ -173,7 +227,11 @@ export default function SharedQuizPage({
               >
                 <p
                   className="text-lg font-bold leading-relaxed"
-                  style={{ color: "#1a1a1a", letterSpacing: "-0.01em" }}
+                  style={{
+                    color: "#1a1a1a",
+                    letterSpacing: "-0.01em",
+                    fontFamily: "'Noto Sans JP', sans-serif",
+                  }}
                 >
                   {q.text}
                 </p>
@@ -183,28 +241,50 @@ export default function SharedQuizPage({
               <div className="flex flex-col gap-3">
                 {q.options.map((opt, idx) => {
                   const isSelected = selected === idx;
+                  const ripple = ripples[idx];
                   return (
                     <motion.button
                       key={idx}
-                      onClick={() => handleSelect(idx)}
+                      onClick={(e) => handleSelect(idx, e)}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{
                         borderColor: themeColor,
                         boxShadow: `0 0 20px rgba(${rgb},0.14)`,
                       }}
                       transition={{ duration: 0.14 }}
-                      className="w-full text-left p-4 rounded-xl flex items-start gap-4"
+                      className="w-full text-left p-4 rounded-xl flex items-start gap-4 relative overflow-hidden"
                       style={{
-                        background: isSelected ? `rgba(${rgb},0.07)` : "#ffffff",
-                        border: `1.5px solid ${isSelected ? themeColor : "rgba(0,0,0,0.1)"}`,
+                        background: isSelected
+                          ? `rgba(${rgb},0.07)`
+                          : "#ffffff",
+                        border: `1.5px solid ${
+                          isSelected ? themeColor : "rgba(0,0,0,0.1)"
+                        }`,
                         cursor: "pointer",
-                        boxShadow: isSelected ? `0 0 0 3px rgba(${rgb},0.12)` : "none",
+                        boxShadow: isSelected
+                          ? `0 0 0 3px rgba(${rgb},0.12)`
+                          : "none",
                       }}
                     >
+                      {/* Ripple */}
+                      {ripple && (
+                        <span
+                          key={ripple.key}
+                          className="ripple-wave"
+                          style={{
+                            left: ripple.x,
+                            top: ripple.y,
+                            background: `rgba(${rgb},0.35)`,
+                          }}
+                        />
+                      )}
+
                       <span
                         className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black mt-0.5"
                         style={{
-                          background: isSelected ? themeColor : "rgba(0,0,0,0.06)",
+                          background: isSelected
+                            ? themeColor
+                            : "rgba(0,0,0,0.06)",
                           color: isSelected ? "#fff" : "#9ca3af",
                           transition: "all 0.14s ease",
                         }}
@@ -213,7 +293,10 @@ export default function SharedQuizPage({
                       </span>
                       <span
                         className="text-sm leading-relaxed"
-                        style={{ color: isSelected ? "#111827" : "#374151" }}
+                        style={{
+                          color: isSelected ? "#111827" : "#374151",
+                          fontFamily: "'Noto Sans JP', sans-serif",
+                        }}
                       >
                         {opt.label}
                       </span>

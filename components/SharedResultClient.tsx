@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import gsap from "gsap";
 import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 
-const GenericRadarChart = dynamic(() => import("@/components/GenericRadarChart"), { ssr: false });
+const GenericRadarChart = dynamic(
+  () => import("@/components/GenericRadarChart"),
+  { ssr: false }
+);
 
 export interface CrossLink {
   href: string;
@@ -33,6 +38,19 @@ function toGrade(score: number): string {
   return score >= 70 ? "A" : score >= 55 ? "B" : score >= 40 ? "C" : "D";
 }
 
+function hexToRgb(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r},${g},${b}`;
+}
+
+interface Particle {
+  id: number;
+  dx: number;
+  dy: number;
+}
+
 export default function SharedResultClient({
   params,
   themeColor,
@@ -58,24 +76,62 @@ export default function SharedResultClient({
     normalizedScores[key] = Number(params[key] ?? 50);
   }
 
+  const rgb = hexToRgb(themeColor);
+
   const [displayDev, setDisplayDev] = useState(50);
-  const [visible, setVisible] = useState(false);
+  const [jitter, setJitter] = useState(0);
+  const [countDone, setCountDone] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [barsReady, setBarsReady] = useState(false);
+
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
-    setVisible(true);
-    let frame = 0;
-    const totalFrames = 40;
-    const start = 50;
-    const end = deviation;
-    const tick = () => {
-      frame++;
-      const t = frame / totalFrames;
-      const eased = 1 - Math.pow(1 - t, 3);
-      setDisplayDev(Math.round(start + (end - start) * eased));
-      if (frame < totalFrames) requestAnimationFrame(tick);
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReduced) {
+      setDisplayDev(deviation);
+      setCountDone(true);
+      setBarsReady(true);
+      return;
+    }
+
+    // GSAP countup with jitter
+    const obj = { val: 50 };
+    tweenRef.current = gsap.to(obj, {
+      val: deviation,
+      duration: 1.2,
+      ease: "power2.out",
+      onUpdate() {
+        const v = Math.round(obj.val);
+        setDisplayDev(v);
+        // random jitter ±2px during count
+        setJitter((Math.random() - 0.5) * 4);
+      },
+      onComplete() {
+        setJitter(0);
+        setCountDone(true);
+        setBarsReady(true);
+
+        // Particle explosion (skip on mobile for perf)
+        const isMobile = window.innerWidth < 768;
+        if (!isMobile) {
+          const ps: Particle[] = Array.from({ length: 20 }, (_, i) => ({
+            id: i,
+            dx: Math.round((Math.random() - 0.5) * 220),
+            dy: Math.round(-Math.random() * 200 - 40),
+          }));
+          setParticles(ps);
+          setTimeout(() => setParticles([]), 900);
+        }
+      },
+    });
+
+    return () => {
+      tweenRef.current?.kill();
     };
-    const id = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(id);
   }, [deviation]);
 
   const gradeLines = categoryKeys
@@ -92,7 +148,10 @@ export default function SharedResultClient({
         className="min-h-screen flex flex-col items-center justify-center px-5"
         style={{ background: bgGradient }}
       >
-        <p className="text-center mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <p
+          className="text-center mb-6"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
           先に診断を受けてください。
         </p>
         <Link
@@ -114,51 +173,117 @@ export default function SharedResultClient({
       <div className="w-full max-w-2xl mx-auto px-5 py-12">
 
         {/* ── 偏差値ヒーロー ── */}
-        <div
-          className={`text-center mb-10 transition-all duration-500 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
         >
-          <p className="text-xs font-bold mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p
+            className="text-xs font-bold mb-3"
+            style={{ color: "rgba(255,255,255,0.3)" }}
+          >
             {testEmoji} {testName}
           </p>
-          <div
-            className="font-black leading-none mb-4"
-            style={{
-              fontSize: "clamp(80px, 18vw, 120px)",
-              color: themeColor,
-              fontVariantNumeric: "tabular-nums",
-              letterSpacing: "-0.04em",
-            }}
-          >
-            {displayDev}
+
+          {/* Deviation number + particles */}
+          <div className="relative inline-block mb-4">
+            <div
+              className="font-black leading-none"
+              style={{
+                fontSize: "clamp(80px, 18vw, 120px)",
+                color: themeColor,
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.04em",
+                fontFamily: "'Inter', sans-serif",
+                transform: `translateX(${jitter}px)`,
+                transition: "transform 0.05s linear",
+                textShadow: `0 0 60px rgba(${rgb},0.4)`,
+              }}
+            >
+              {displayDev}
+            </div>
+
+            {/* Particles */}
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className="score-particle"
+                style={
+                  {
+                    "--pdx": `${p.dx}px`,
+                    "--pdy": `${p.dy}px`,
+                    background: themeColor,
+                    boxShadow: `0 0 6px ${themeColor}`,
+                  } as React.CSSProperties
+                }
+              />
+            ))}
           </div>
-          <div
-            className="inline-flex items-center gap-2 text-lg font-bold px-5 py-2 rounded-full mb-4"
-            style={{
-              background: `${themeColor}22`,
-              color: "#fff",
-              border: `1px solid ${themeColor}55`,
-            }}
-          >
-            {rankEmoji} {rank}
-          </div>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>
-            上位{" "}
-            <span style={{ color: themeColor, fontWeight: 700 }}>{percentile}%</span>{" "}
-            に位置します
-          </p>
-        </div>
+
+          {/* Rank badge — bounces in after countup */}
+          {countDone ? (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                delay: 0.3,
+                type: "spring",
+                stiffness: 500,
+                damping: 22,
+              }}
+              className="inline-flex items-center gap-2 text-lg font-bold px-5 py-2 rounded-full mb-4 badge-pulse"
+              style={{
+                background: `rgba(${rgb},0.13)`,
+                color: "#fff",
+                border: `1px solid rgba(${rgb},0.35)`,
+              }}
+            >
+              {rankEmoji} {rank}
+            </motion.div>
+          ) : (
+            <div style={{ height: "44px" }} />
+          )}
+
+          {/* 上位XX% — fades in after countup */}
+          {countDone && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="text-sm"
+              style={{ color: "rgba(255,255,255,0.3)" }}
+            >
+              上位{" "}
+              <span
+                style={{
+                  color: themeColor,
+                  fontWeight: 700,
+                  textShadow: `0 0 12px rgba(${rgb},0.5)`,
+                }}
+              >
+                {percentile}%
+              </span>{" "}
+              に位置します
+            </motion.p>
+          )}
+        </motion.div>
 
         {/* ── レーダーチャート ── */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           className="rounded-2xl p-6 mb-5"
           style={{
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
-          <p className="text-xs font-bold mb-4 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p
+            className="text-xs font-bold mb-4 text-center"
+            style={{ color: "rgba(255,255,255,0.3)" }}
+          >
             5軸レーダーチャート
           </p>
           <GenericRadarChart
@@ -167,7 +292,7 @@ export default function SharedResultClient({
             keys={categoryKeys}
             color={themeColor}
           />
-        </div>
+        </motion.div>
 
         {/* ── カテゴリ別スコアバー ── */}
         <div
@@ -177,24 +302,35 @@ export default function SharedResultClient({
             border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
-          <p className="text-xs font-bold mb-5" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p
+            className="text-xs font-bold mb-5"
+            style={{ color: "rgba(255,255,255,0.3)" }}
+          >
             カテゴリ別スコア
           </p>
           <div className="flex flex-col gap-4">
-            {categoryKeys.map((key) => {
+            {categoryKeys.map((key, idx) => {
               const val = normalizedScores[key] ?? 0;
               const grade = toGrade(val);
               return (
-                <div key={key}>
+                <motion.div
+                  key={key}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={barsReady ? { opacity: 1, x: 0 } : {}}
+                  transition={{ delay: 0.1 + idx * 0.12, duration: 0.4 }}
+                >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
+                      <span
+                        className="text-sm font-medium"
+                        style={{ color: "rgba(255,255,255,0.7)" }}
+                      >
                         {categoryLabels[key]}
                       </span>
                       <span
                         className="text-xs font-black px-1.5 py-0.5 rounded"
                         style={{
-                          background: `${themeColor}30`,
+                          background: `rgba(${rgb},0.18)`,
                           color: themeColor,
                           minWidth: "20px",
                           textAlign: "center",
@@ -203,41 +339,69 @@ export default function SharedResultClient({
                         {grade}
                       </span>
                     </div>
-                    <span className="text-sm font-black" style={{ color: themeColor }}>
+                    <span
+                      className="text-sm font-black"
+                      style={{ color: themeColor }}
+                    >
                       {val}
                     </span>
                   </div>
                   <div
-                    className="w-full h-2 rounded-full"
+                    className="w-full h-2 rounded-full overflow-hidden"
                     style={{ background: "rgba(255,255,255,0.06)" }}
                   >
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${val}%`, background: themeColor, opacity: 0.85 }}
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={barsReady ? { scaleX: 1 } : {}}
+                      transition={{
+                        delay: 0.2 + idx * 0.12,
+                        duration: 0.65,
+                        ease: "easeOut",
+                      }}
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${val}%`,
+                        background: `linear-gradient(90deg, rgba(${rgb},0.6), ${themeColor})`,
+                        transformOrigin: "left",
+                      }}
                     />
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
 
         {/* ── 強み・弱み ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5"
+        >
           <div
             className="rounded-2xl p-5"
             style={{
-              background: `${themeColor}0f`,
-              border: `1px solid ${themeColor}33`,
+              background: `rgba(${rgb},0.06)`,
+              border: `1px solid rgba(${rgb},0.2)`,
             }}
           >
-            <p className="text-xs font-bold mb-2" style={{ color: themeColor }}>
+            <p
+              className="text-xs font-bold mb-2"
+              style={{ color: themeColor }}
+            >
               💪 強み
             </p>
-            <p className="text-sm font-bold mb-1.5" style={{ color: "rgba(255,255,255,0.9)" }}>
+            <p
+              className="text-sm font-bold mb-1.5"
+              style={{ color: "rgba(255,255,255,0.9)" }}
+            >
               {categoryLabels[strengthKey]}
             </p>
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p
+              className="text-xs leading-relaxed"
+              style={{ color: "rgba(255,255,255,0.4)" }}
+            >
               {strengthTexts[strengthKey]}
             </p>
           </div>
@@ -248,32 +412,53 @@ export default function SharedResultClient({
               border: "1px solid rgba(255,255,255,0.08)",
             }}
           >
-            <p className="text-xs font-bold mb-2" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p
+              className="text-xs font-bold mb-2"
+              style={{ color: "rgba(255,255,255,0.4)" }}
+            >
               🌱 伸びしろ
             </p>
-            <p className="text-sm font-bold mb-1.5" style={{ color: "rgba(255,255,255,0.9)" }}>
+            <p
+              className="text-sm font-bold mb-1.5"
+              style={{ color: "rgba(255,255,255,0.9)" }}
+            >
               {categoryLabels[weaknessKey]}
             </p>
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p
+              className="text-xs leading-relaxed"
+              style={{ color: "rgba(255,255,255,0.4)" }}
+            >
               {weaknessTexts[weaknessKey]}
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* ── シェア ── */}
-        <div className="flex flex-col gap-3 mb-10">
-          <a
+        {/* ── シェアボタン ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85, duration: 0.4 }}
+          className="flex flex-col gap-3 mb-10"
+        >
+          <motion.a
             href={tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base transition-opacity hover:opacity-85"
+            whileHover={{
+              boxShadow: `0 0 28px rgba(${rgb},0.4)`,
+              scale: 1.02,
+            }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.18 }}
+            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base"
             style={{ background: themeColor }}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
             結果をXでシェアする
-          </a>
+          </motion.a>
+
           <Link
             href={quizPath}
             className="flex items-center justify-center w-full py-4 rounded-2xl font-bold text-base transition-all hover:opacity-80"
@@ -285,30 +470,41 @@ export default function SharedResultClient({
           >
             もう一度やる
           </Link>
-        </div>
+        </motion.div>
 
         {/* ── note CTA ── */}
-        <a
+        <motion.a
           href="https://note.com/zen_ai_logic"
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01]"
+          whileHover={{ scale: 1.01, boxShadow: `0 8px 24px rgba(${rgb},0.12)` }}
+          transition={{ duration: 0.18 }}
+          className="block rounded-2xl p-5 mb-6"
           style={{
-            background: `${themeColor}0a`,
-            border: `1px solid ${themeColor}25`,
+            background: `rgba(${rgb},0.04)`,
+            border: `1px solid rgba(${rgb},0.15)`,
             textDecoration: "none",
           }}
         >
           <div className="flex items-start gap-4">
             <div className="text-2xl mt-0.5 shrink-0">📖</div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold mb-1.5" style={{ color: themeColor }}>
+              <p
+                className="text-xs font-bold mb-1.5"
+                style={{ color: themeColor }}
+              >
                 偏差値シリーズの研究をnoteで公開中
               </p>
-              <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>
+              <p
+                className="text-sm font-bold mb-1.5 leading-snug"
+                style={{ color: "rgba(255,255,255,0.85)" }}
+              >
                 人見知り・コミュ力・恋愛を、心理学論文から考えた記事
               </p>
-              <p className="text-xs mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+              <p
+                className="text-xs mb-3 leading-relaxed"
+                style={{ color: "rgba(255,255,255,0.3)" }}
+              >
                 テストを作るために読んだ論文と、自分の実生活を重ねて書いた記事シリーズ。
               </p>
               <span className="text-xs font-bold" style={{ color: themeColor }}>
@@ -316,7 +512,7 @@ export default function SharedResultClient({
               </span>
             </div>
           </div>
-        </a>
+        </motion.a>
 
         {/* ── 他のテスト ── */}
         <div
@@ -326,7 +522,10 @@ export default function SharedResultClient({
             border: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          <p className="text-xs font-bold mb-4" style={{ color: "rgba(255,255,255,0.25)" }}>
+          <p
+            className="text-xs font-bold mb-4"
+            style={{ color: "rgba(255,255,255,0.25)" }}
+          >
             偏差値シリーズ — 他のテスト
           </p>
           <div className="flex flex-col gap-0">
@@ -336,15 +535,24 @@ export default function SharedResultClient({
                 href={link.href}
                 className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
                 style={{
-                  borderTop: i > 0 ? "1px solid rgba(255,255,255,0.04)" : undefined,
+                  borderTop:
+                    i > 0 ? "1px solid rgba(255,255,255,0.04)" : undefined,
                 }}
               >
-                <span className="text-xl w-7 text-center shrink-0">{link.emoji}</span>
+                <span className="text-xl w-7 text-center shrink-0">
+                  {link.emoji}
+                </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  <p
+                    className="text-sm font-bold"
+                    style={{ color: "rgba(255,255,255,0.8)" }}
+                  >
                     {link.name}
                   </p>
-                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.28)" }}>
+                  <p
+                    className="text-xs"
+                    style={{ color: "rgba(255,255,255,0.28)" }}
+                  >
                     {link.desc} →
                   </p>
                 </div>
@@ -358,7 +566,10 @@ export default function SharedResultClient({
         </div>
 
         {/* フッター */}
-        <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.15)" }}>
+        <p
+          className="text-center text-xs"
+          style={{ color: "rgba(255,255,255,0.15)" }}
+        >
           作成:{" "}
           <a
             href="https://x.com/Yoko_ai_dev"

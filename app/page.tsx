@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const CATEGORIES = [
   {
@@ -96,36 +99,43 @@ function hexToRgb(hex: string): string {
   return `${r},${g},${b}`;
 }
 
-function TestCard({ t, size = "sm" }: { t: (typeof CATEGORIES)[0]["tests"][0]; size?: "sm" | "lg" }) {
-  const rgb = hexToRgb(t.color);
-  const padding = size === "lg" ? "p-8" : "p-6";
-  const titleSize = size === "lg" ? "text-2xl" : "text-lg";
-  const descColor = size === "lg" ? "#6a4a6a" : "#3a3a5a";
+// ── Card components ──
 
+function PrimaryCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
+  const rgb = hexToRgb(t.color);
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: `0 12px 32px rgba(${rgb},0.18)` }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="rounded-2xl"
-      style={{
-        background: `linear-gradient(135deg, rgba(${rgb},${size === "lg" ? "0.1" : "0.08"}) 0%, rgba(${rgb},0.03) 100%)`,
-        border: `1px solid rgba(${rgb},${size === "lg" ? "0.28" : "0.2"})`,
+      className="test-card rounded-2xl"
+      style={{ transformPerspective: 1000 }}
+      whileHover={{
+        y: -8,
+        rotateX: 2,
+        rotateY: -2,
+        boxShadow: `0 20px 60px rgba(${rgb},0.25)`,
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
     >
-      <Link href={t.href} className={`block ${padding}`}>
+      <Link
+        href={t.href}
+        className="block p-8 rounded-2xl"
+        style={{
+          background: `linear-gradient(135deg, rgba(${rgb},0.1) 0%, rgba(${rgb},0.04) 100%)`,
+          border: `1px solid rgba(${rgb},0.28)`,
+        }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className={`${titleSize} font-black mb-2`} style={{ color: "#f0eeff" }}>
+            <p className="text-2xl font-black mb-2" style={{ color: "#f0eeff" }}>
               {t.emoji} {t.name}
             </p>
-            <p className={`${size === "lg" ? "text-sm mb-5" : "text-xs mb-4 leading-relaxed"}`} style={{ color: descColor }}>
+            <p className="text-sm mb-5" style={{ color: "#6a4a6a" }}>
               {t.desc}
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {t.axes.map((a) => (
                 <span
                   key={a}
-                  className={`${size === "lg" ? "text-xs px-2.5 py-1 font-medium" : "text-[10px] px-2 py-0.5"} rounded-full`}
+                  className="text-xs px-2.5 py-1 rounded-full font-medium"
                   style={{ background: `rgba(${rgb},0.12)`, color: t.color }}
                 >
                   {a}
@@ -133,8 +143,11 @@ function TestCard({ t, size = "sm" }: { t: (typeof CATEGORIES)[0]["tests"][0]; s
               ))}
             </div>
           </div>
-          <p className="text-xs font-mono shrink-0 mt-1" style={{ color: size === "lg" ? "#4a2a4a" : "#3a3a5a" }}>
-            {size === "lg" ? "25問 · 5分" : "25問"}
+          <p
+            className="text-xs font-mono shrink-0 mt-1"
+            style={{ color: "#4a2a4a" }}
+          >
+            25問 · 5分
           </p>
         </div>
       </Link>
@@ -144,22 +157,33 @@ function TestCard({ t, size = "sm" }: { t: (typeof CATEGORIES)[0]["tests"][0]; s
 
 function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
   const rgb = hexToRgb(t.color);
-
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: `0 12px 32px rgba(${rgb},0.18)` }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="rounded-2xl"
-      style={{
-        background: `linear-gradient(135deg, rgba(${rgb},0.08) 0%, rgba(${rgb},0.03) 100%)`,
-        border: `1px solid rgba(${rgb},0.2)`,
+      className="test-card rounded-2xl"
+      style={{ transformPerspective: 1000 }}
+      whileHover={{
+        y: -8,
+        rotateX: 2,
+        rotateY: -2,
+        boxShadow: `0 20px 60px rgba(${rgb},0.22)`,
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
     >
-      <Link href={t.href} className="block p-6">
+      <Link
+        href={t.href}
+        className="block p-6 rounded-2xl"
+        style={{
+          background: `linear-gradient(135deg, rgba(${rgb},0.08) 0%, rgba(${rgb},0.03) 100%)`,
+          border: `1px solid rgba(${rgb},0.2)`,
+        }}
+      >
         <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
           {t.emoji} {t.name}
         </p>
-        <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
+        <p
+          className="text-xs mb-4 leading-relaxed"
+          style={{ color: "#3a3a5a" }}
+        >
           {t.desc}
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -172,7 +196,13 @@ function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
               {a}
             </span>
           ))}
-          <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              color: "#3a3a5a",
+            }}
+          >
             +2
           </span>
         </div>
@@ -181,44 +211,285 @@ function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
   );
 }
 
+function SingleCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
+  const rgb = hexToRgb(t.color);
+  return (
+    <motion.div
+      className="test-card rounded-2xl"
+      style={{ transformPerspective: 1000 }}
+      whileHover={{
+        y: -8,
+        rotateX: 2,
+        rotateY: -2,
+        boxShadow: `0 20px 60px rgba(${rgb},0.22)`,
+        transition: { duration: 0.3, ease: "easeOut" },
+      }}
+    >
+      <Link
+        href={t.href}
+        className="block p-6 rounded-2xl"
+        style={{
+          background: `linear-gradient(135deg, rgba(${rgb},0.08) 0%, rgba(${rgb},0.03) 100%)`,
+          border: `1px solid rgba(${rgb},0.22)`,
+        }}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-xl font-black mb-2" style={{ color: "#f0eeff" }}>
+              {t.emoji} {t.name}
+            </p>
+            <p
+              className="text-xs mb-4 leading-relaxed"
+              style={{ color: "#4a4a6a" }}
+            >
+              {t.desc}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {t.axes.map((a) => (
+                <span
+                  key={a}
+                  className="text-[10px] px-2 py-0.5 rounded-full"
+                  style={{ background: `rgba(${rgb},0.12)`, color: t.color }}
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+          </div>
+          <p
+            className="text-xs font-mono shrink-0 mt-1"
+            style={{ color: "#3a3a5a" }}
+          >
+            25問
+          </p>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+// ── Hub ──
+
 export default function Hub() {
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReduced) {
+      // Show all elements immediately
+      gsap.set(".hero-char", { opacity: 1, y: 0 });
+      gsap.set(".hero-sub", { opacity: 1 });
+      gsap.set(".test-card", { opacity: 1, y: 0 });
+      gsap.set(".cat-label", { opacity: 1, x: 0 });
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 1. Hero text char-by-char stagger
+    gsap.fromTo(
+      ".hero-char",
+      { y: 28, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        stagger: 0.05,
+        duration: 0.5,
+        ease: "power3.out",
+        delay: 0.1,
+      }
+    );
+
+    // 2. Hero sub text fade in after chars complete
+    gsap.fromTo(
+      ".hero-sub",
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6, ease: "power2.out", delay: 0.65 }
+    );
+
+    // 3. Category labels slide in from left (ScrollTrigger)
+    ScrollTrigger.batch(".cat-label", {
+      onEnter: (batch) =>
+        gsap.fromTo(
+          batch,
+          { opacity: 0, x: -24 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.4,
+            stagger: 0.08,
+            ease: "power2.out",
+          }
+        ),
+      once: true,
+      start: "top 92%",
+    });
+
+    // 4. Cards fade-up stagger (ScrollTrigger)
+    ScrollTrigger.batch(".test-card", {
+      onEnter: (batch) =>
+        gsap.fromTo(
+          batch,
+          { opacity: 0, y: 36 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.55,
+            ease: "power3.out",
+          }
+        ),
+      once: true,
+      start: "top 92%",
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, []);
+
+  // Hero text: split into spans per character
+  const line1 = "自分を";
+  const line2color = "数値化";
+  const line2plain = "する";
+
   return (
     <main
-      className="min-h-screen"
-      style={{ background: "linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%)" }}
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%)",
+      }}
     >
-      <div className="max-w-3xl mx-auto px-6 pt-20 pb-24">
+      {/* ── Gradient mesh blobs ── */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="mesh-blob"
+          style={{
+            width: "600px",
+            height: "600px",
+            top: "-100px",
+            left: "-100px",
+            background:
+              "radial-gradient(circle, rgba(236,72,153,0.09) 0%, transparent 70%)",
+            animation: "blobDrift1 20s ease-in-out infinite",
+          }}
+        />
+        <div
+          className="mesh-blob"
+          style={{
+            width: "500px",
+            height: "500px",
+            top: "0",
+            right: "-80px",
+            background:
+              "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%)",
+            animation: "blobDrift2 24s ease-in-out infinite",
+          }}
+        />
+        <div
+          className="mesh-blob"
+          style={{
+            width: "400px",
+            height: "400px",
+            top: "40%",
+            left: "10%",
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)",
+            animation: "blobDrift3 18s ease-in-out infinite",
+          }}
+        />
+      </div>
 
-        {/* ヒーロー */}
+      <div className="relative max-w-3xl mx-auto px-6 pt-20 pb-24">
+
+        {/* ── Hero ── */}
         <div className="mb-16">
-          <p className="text-xs font-mono tracking-widest mb-4" style={{ color: "#3a3a5a" }}>
+          <p
+            className="text-xs font-mono tracking-widest mb-4"
+            style={{ color: "#3a3a5a" }}
+          >
             HENSACHI SERIES — 7 TESTS
           </p>
+
           <h1
-            className="font-black leading-[0.9] tracking-tight mb-6"
+            className="font-black leading-[0.92] tracking-tight mb-6"
             style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}
           >
-            自分を<br />
-            <span style={{ color: "#e91e8c" }}>数値化</span>する
+            {/* Line 1 */}
+            <span>
+              {line1.split("").map((c, i) => (
+                <span key={i} className="hero-char" style={{ opacity: 0 }}>
+                  {c}
+                </span>
+              ))}
+            </span>
+            <br />
+            {/* Line 2 — colored part */}
+            <span style={{ color: "#e91e8c" }}>
+              {line2color.split("").map((c, i) => (
+                <span
+                  key={i + line1.length}
+                  className="hero-char"
+                  style={{ opacity: 0 }}
+                >
+                  {c}
+                </span>
+              ))}
+            </span>
+            {/* Line 2 — plain part */}
+            <span>
+              {line2plain.split("").map((c, i) => (
+                <span
+                  key={i + line1.length + line2color.length}
+                  className="hero-char"
+                  style={{ opacity: 0 }}
+                >
+                  {c}
+                </span>
+              ))}
+            </span>
           </h1>
-          <p className="text-sm max-w-md leading-loose" style={{ color: "#4a4a6a" }}>
+
+          <p
+            className="hero-sub text-sm max-w-md leading-loose"
+            style={{ color: "#4a4a6a", opacity: 0 }}
+          >
             心理学論文ベースの25問。偏差値と5軸レーダーで自分の傾向が見える。
           </p>
         </div>
 
-        {/* テスト一覧 */}
+        {/* ── Test cards ── */}
         <div className="space-y-10">
           {CATEGORIES.map((cat, ci) => (
             <section key={cat.label}>
-              <p className="text-xs font-bold tracking-widest mb-4" style={{ color: "#3a3a5a" }}>
-                {String(ci + 1).padStart(2, "0")} {cat.label}
+              {/* Category label */}
+              <p
+                className="cat-label text-xs font-bold tracking-widest mb-4"
+                style={{
+                  color: "#3a3a5a",
+                  fontFamily: "'Inter', sans-serif",
+                  opacity: 0,
+                }}
+              >
+                <span
+                  style={{
+                    color: "#e91e8c",
+                    fontSize: "16px",
+                    fontWeight: 800,
+                    marginRight: "8px",
+                  }}
+                >
+                  {String(ci + 1).padStart(2, "0")}
+                </span>
+                {cat.label}
               </p>
 
               {cat.tests.length === 1 ? (
-                <TestCard t={cat.tests[0]} size="sm" />
+                <SingleCard t={cat.tests[0]} />
               ) : cat.tests[0].primary ? (
                 <div className="space-y-3">
-                  <TestCard t={cat.tests[0]} size="lg" />
+                  <PrimaryCard t={cat.tests[0]} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {cat.tests.slice(1).map((t) => (
                       <SmallCard key={t.href} t={t} />
@@ -236,8 +507,11 @@ export default function Hub() {
           ))}
         </div>
 
-        {/* フッター */}
-        <div className="mt-16 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        {/* ── Footer ── */}
+        <div
+          className="mt-16 pt-8"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+        >
           <div className="flex items-center justify-between">
             <p className="text-xs" style={{ color: "#2a2a4a" }}>
               結果は保存されません。偏差値はN(50,10)正規化スコア。
