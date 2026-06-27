@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/commu-scoring";
 import type { CategoryKey } from "@/data/commu-questions";
+import { crossLinksExcluding } from "@/lib/all-tests";
 
 const CommuRadarChart = dynamic(() => import("@/components/CommuRadarChart"), { ssr: false });
 
@@ -282,35 +283,30 @@ export default function CommuResultClient({ params }: Props) {
           </div>
         </a>
 
-        {/* 恋愛偏差値テストへの誘導 */}
+        {/* 偏差値シリーズ全7テスト */}
         <div
           className="rounded-2xl p-5 mb-8"
-          style={{ background: "rgba(233,30,140,0.05)", border: "1px solid rgba(233,30,140,0.15)" }}
+          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
-          <p className="text-xs font-bold mb-3 text-center" style={{ color: "#7a5a9a" }}>
-            偏差値シリーズ
+          <p className="text-xs font-bold mb-3 text-center" style={{ color: "#2a4a5a" }}>
+            偏差値シリーズ — 他にも診断してみる
           </p>
-          <Link
-            href="/"
-            className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-          >
-            <span className="text-2xl">💘</span>
-            <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
-              <p className="text-xs" style={{ color: "#8a5a7a" }}>表現力・察し力・告白力を5軸で診断 →</p>
-            </div>
-          </Link>
-          <Link
-            href="/inka"
-            className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5 mt-2"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-          >
-            <span className="text-2xl">🌙</span>
-            <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
-              <p className="text-xs" style={{ color: "#7a5a8a" }}>人見知り・ぼっち耐性・陰の趣味を診断 →</p>
-            </div>
-          </Link>
+          <div className="flex flex-col gap-1">
+            {crossLinksExcluding("/commu/quiz").map((test) => (
+              <Link
+                key={test.href}
+                href={test.href}
+                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
+              >
+                <span className="text-lg">{test.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>{test.name}</p>
+                  <p className="text-xs" style={{ color: "#2a4a5a" }}>{test.desc} →</p>
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: test.color }} />
+              </Link>
+            ))}
+          </div>
         </div>
 
         <p className="text-center text-xs" style={{ color: "#1a3a55" }}>

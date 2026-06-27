@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function OldQuizPage() {
+export default function LovePage() {
   redirect("/love/quiz");
 }

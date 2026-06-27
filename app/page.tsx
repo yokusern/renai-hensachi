@@ -1,5 +1,91 @@
 import Link from "next/link";
 
+const CATEGORIES = [
+  {
+    label: "性格・人間関係",
+    tests: [
+      {
+        href: "/love/quiz",
+        emoji: "💘",
+        name: "恋愛偏差値テスト",
+        desc: "なぜ恋愛がうまくいかないか、5軸の数値で見える",
+        axes: ["表現力", "傾聴力", "察し力", "告白力", "依存度"],
+        color: "#EC4899",
+        primary: true,
+      },
+      {
+        href: "/commu/quiz",
+        emoji: "💬",
+        name: "コミュ力偏差値テスト",
+        desc: "どの軸で詰まっているか数値で分かる",
+        axes: ["表現力", "傾聴力", "場の読み"],
+        color: "#0EA5E9",
+        primary: false,
+      },
+      {
+        href: "/inka/quiz",
+        emoji: "🌙",
+        name: "陰キャ偏差値テスト",
+        desc: "自分がどのタイプの陰キャか分類される",
+        axes: ["人見知り度", "ぼっち耐性", "陰の趣味力"],
+        color: "#8B5CF6",
+        primary: false,
+      },
+    ],
+  },
+  {
+    label: "思考・認知",
+    tests: [
+      {
+        href: "/jiatama/quiz",
+        emoji: "🧠",
+        name: "地頭偏差値テスト",
+        desc: "パターン認識・論理推論・直感抑制。25問で認知力を偏差値化",
+        axes: ["パターン認識", "抽象化", "論理推論", "前提検証", "直感抑制"],
+        color: "#10B981",
+        primary: false,
+      },
+    ],
+  },
+  {
+    label: "就活・キャリア",
+    tests: [
+      {
+        href: "/shukatsu/quiz",
+        emoji: "💼",
+        name: "就活偏差値テスト（文系）",
+        desc: "自己分析・業界研究・面接力。選考前の弱点が分かる",
+        axes: ["自己分析力", "業界・企業研究", "面接力"],
+        color: "#3B82F6",
+        primary: false,
+      },
+      {
+        href: "/shukatsu-it/quiz",
+        emoji: "💻",
+        name: "就活偏差値テスト（IT系）",
+        desc: "技術力・ポートフォリオ・自走力。エンジニア就活の準備度を偏差値化",
+        axes: ["技術力", "ポートフォリオ", "自走力"],
+        color: "#059669",
+        primary: false,
+      },
+    ],
+  },
+  {
+    label: "お金・リテラシー",
+    tests: [
+      {
+        href: "/money/quiz",
+        emoji: "💰",
+        name: "お金リテラシー偏差値テスト",
+        desc: "貯蓄・投資・制度活用・詐欺耐性。金融リテラシーを5軸で診断",
+        axes: ["貯蓄・支出管理", "投資知識", "借入理解", "制度活用力", "リスク認識"],
+        color: "#D97706",
+        primary: false,
+      },
+    ],
+  },
+];
+
 export default function Hub() {
   return (
     <main
@@ -8,128 +94,160 @@ export default function Hub() {
     >
       <div className="max-w-3xl mx-auto px-6 pt-20 pb-24">
 
-        {/* ヒーロー — 左揃え、タイポグラフィ強調 */}
-        <div className="mb-20">
-          <h1 className="font-black leading-[0.9] tracking-tight mb-8" style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}>
+        {/* ヒーロー */}
+        <div className="mb-16">
+          <p className="text-xs font-mono tracking-widest mb-4" style={{ color: "#3a3a5a" }}>
+            HENSACHI SERIES — 7 TESTS
+          </p>
+          <h1 className="font-black leading-[0.9] tracking-tight mb-6" style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}>
             自分を<br />
             <span style={{ color: "#e91e8c" }}>数値化</span>する
           </h1>
-
           <p className="text-sm max-w-md leading-loose" style={{ color: "#4a4a6a" }}>
-            心理学論文ベースの25問。偏差値と5軸レーダーで傾向が見える。
+            心理学論文ベースの25問。偏差値と5軸レーダーで自分の傾向が見える。
           </p>
         </div>
 
-        {/* テスト一覧 — 3つで異なるビジュアルウェイト */}
-        <div className="space-y-3">
+        {/* テスト一覧 */}
+        <div className="space-y-10">
+          {CATEGORIES.map((cat, ci) => (
+            <section key={cat.label}>
+              <p className="text-xs font-bold tracking-widest mb-4" style={{ color: "#3a3a5a" }}>
+                {String(ci + 1).padStart(2, "0")} {cat.label}
+              </p>
 
-          {/* 恋愛テスト — プライマリ・大きめ */}
-          <Link
-            href="/quiz"
-            className="group block rounded-2xl p-8 transition-all duration-300 hover:scale-[1.01]"
-            style={{
-              background: "linear-gradient(135deg, rgba(233,30,140,0.1) 0%, rgba(233,30,140,0.04) 100%)",
-              border: "1px solid rgba(233,30,140,0.25)",
-            }}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-xs font-mono tracking-widest" style={{ color: "#e91e8c" }}>01</span>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(233,30,140,0.15)", color: "#e91e8c" }}>
-                    恋愛
-                  </span>
+              {cat.tests.length === 1 ? (
+                /* 1テスト: フルwidthカード */
+                <Link
+                  href={cat.tests[0].href}
+                  className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
+                  style={{
+                    background: `linear-gradient(135deg, rgba(${hexToRgb(cat.tests[0].color)},0.08) 0%, rgba(${hexToRgb(cat.tests[0].color)},0.03) 100%)`,
+                    border: `1px solid rgba(${hexToRgb(cat.tests[0].color)},0.22)`,
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-xl font-black mb-2" style={{ color: "#f0eeff" }}>
+                        {cat.tests[0].emoji} {cat.tests[0].name}
+                      </p>
+                      <p className="text-xs mb-4 leading-relaxed" style={{ color: "#4a4a6a" }}>
+                        {cat.tests[0].desc}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {cat.tests[0].axes.map((a) => (
+                          <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
+                            style={{ background: `rgba(${hexToRgb(cat.tests[0].color)},0.12)`, color: cat.tests[0].color }}>
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-xs font-mono shrink-0 mt-1" style={{ color: "#3a3a5a" }}>25問</p>
+                  </div>
+                </Link>
+              ) : cat.tests[0].primary ? (
+                /* 恋愛: primary大 + 2列小 */
+                <div className="space-y-3">
+                  <Link
+                    href={cat.tests[0].href}
+                    className="group block rounded-2xl p-8 transition-all duration-300 hover:scale-[1.01]"
+                    style={{
+                      background: `linear-gradient(135deg, rgba(${hexToRgb(cat.tests[0].color)},0.1) 0%, rgba(${hexToRgb(cat.tests[0].color)},0.04) 100%)`,
+                      border: `1px solid rgba(${hexToRgb(cat.tests[0].color)},0.28)`,
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <p className="text-2xl font-black mb-2" style={{ color: "#f0eeff" }}>
+                          {cat.tests[0].emoji} {cat.tests[0].name}
+                        </p>
+                        <p className="text-sm mb-5" style={{ color: "#6a4a6a" }}>
+                          {cat.tests[0].desc}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {cat.tests[0].axes.map((a) => (
+                            <span key={a} className="text-xs px-2.5 py-1 rounded-full font-medium"
+                              style={{ background: `rgba(${hexToRgb(cat.tests[0].color)},0.12)`, color: cat.tests[0].color }}>
+                              {a}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-xs font-mono shrink-0 mt-1" style={{ color: "#4a2a4a" }}>25問 · 5分</p>
+                    </div>
+                  </Link>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {cat.tests.slice(1).map((t) => (
+                      <Link
+                        key={t.href}
+                        href={t.href}
+                        className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
+                        style={{
+                          background: `linear-gradient(135deg, rgba(${hexToRgb(t.color)},0.08) 0%, rgba(${hexToRgb(t.color)},0.03) 100%)`,
+                          border: `1px solid rgba(${hexToRgb(t.color)},0.2)`,
+                        }}
+                      >
+                        <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
+                          {t.emoji} {t.name}
+                        </p>
+                        <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
+                          {t.desc}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {t.axes.map((a) => (
+                            <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
+                              style={{ background: `rgba(${hexToRgb(t.color)},0.1)`, color: t.color }}>
+                              {a}
+                            </span>
+                          ))}
+                          <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
+                            +2
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-2xl font-black mb-2" style={{ color: "#f0eeff" }}>恋愛偏差値テスト</p>
-                <p className="text-sm mb-5" style={{ color: "#6a4a6a" }}>
-                  なぜ恋愛がうまくいかないか、5軸の数値で見える
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {["表現力", "傾聴力", "察し力", "告白力", "依存度"].map(c => (
-                    <span key={c} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                      style={{ background: "rgba(233,30,140,0.12)", color: "#e91e8c" }}>
-                      {c}
-                    </span>
+              ) : (
+                /* 2テスト: 2列 */
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {cat.tests.map((t) => (
+                    <Link
+                      key={t.href}
+                      href={t.href}
+                      className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
+                      style={{
+                        background: `linear-gradient(135deg, rgba(${hexToRgb(t.color)},0.08) 0%, rgba(${hexToRgb(t.color)},0.03) 100%)`,
+                        border: `1px solid rgba(${hexToRgb(t.color)},0.2)`,
+                      }}
+                    >
+                      <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
+                        {t.emoji} {t.name}
+                      </p>
+                      <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a3a5a" }}>
+                        {t.desc}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {t.axes.map((a) => (
+                          <span key={a} className="text-[10px] px-2 py-0.5 rounded-full"
+                            style={{ background: `rgba(${hexToRgb(t.color)},0.1)`, color: t.color }}>
+                            {a}
+                          </span>
+                        ))}
+                        <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#3a3a5a" }}>
+                          +2
+                        </span>
+                      </div>
+                    </Link>
                   ))}
                 </div>
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="text-5xl font-black mb-1" style={{ color: "rgba(233,30,140,0.15)" }}>💘</p>
-                <p className="text-xs font-mono" style={{ color: "#4a2a4a" }}>25問 · 5分</p>
-              </div>
-            </div>
-          </Link>
-
-          {/* セカンダリ2つ — 横並び（大画面）または縦並び（モバイル）*/}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-            {/* コミュ力テスト */}
-            <Link
-              href="/commu/quiz"
-              className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
-              style={{
-                background: "linear-gradient(135deg, rgba(14,165,233,0.08) 0%, rgba(14,165,233,0.03) 100%)",
-                border: "1px solid rgba(14,165,233,0.2)",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-mono tracking-widest" style={{ color: "#0ea5e9" }}>02</span>
-                <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(14,165,233,0.15)", color: "#0ea5e9" }}>
-                  コミュ力
-                </span>
-              </div>
-              <p className="text-lg font-black mb-1.5" style={{ color: "#e8f4ff" }}>コミュ力偏差値テスト</p>
-              <p className="text-xs mb-4 leading-relaxed" style={{ color: "#3a5a77" }}>
-                どの軸で詰まっているか数値で分かる
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {["表現力", "傾聴力", "場の読み"].map(c => (
-                  <span key={c} className="text-[10px] px-2 py-0.5 rounded-full"
-                    style={{ background: "rgba(14,165,233,0.1)", color: "#38bdf8" }}>
-                    {c}
-                  </span>
-                ))}
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(14,165,233,0.06)", color: "#2a6a8a" }}>
-                  +2
-                </span>
-              </div>
-            </Link>
-
-            {/* 陰キャテスト */}
-            <Link
-              href="/inka/quiz"
-              className="group block rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01]"
-              style={{
-                background: "linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(168,85,247,0.03) 100%)",
-                border: "1px solid rgba(168,85,247,0.2)",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-mono tracking-widest" style={{ color: "#a855f7" }}>03</span>
-                <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(168,85,247,0.15)", color: "#a855f7" }}>
-                  陰キャ度
-                </span>
-              </div>
-              <p className="text-lg font-black mb-1.5" style={{ color: "#f0e8ff" }}>陰キャ偏差値テスト</p>
-              <p className="text-xs mb-4 leading-relaxed" style={{ color: "#4a3a6a" }}>
-                自分がどのタイプの陰キャか分類される
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {["人見知り度", "ぼっち耐性"].map(c => (
-                  <span key={c} className="text-[10px] px-2 py-0.5 rounded-full"
-                    style={{ background: "rgba(168,85,247,0.1)", color: "#c084fc" }}>
-                    {c}
-                  </span>
-                ))}
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(168,85,247,0.06)", color: "#4a2a6a" }}>
-                  +3
-                </span>
-              </div>
-            </Link>
-          </div>
+              )}
+            </section>
+          ))}
         </div>
 
-        {/* フッター注釈 */}
+        {/* フッター */}
         <div className="mt-16 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           <div className="flex items-center justify-between">
             <p className="text-xs" style={{ color: "#2a2a4a" }}>
@@ -150,4 +268,11 @@ export default function Hub() {
       </div>
     </main>
   );
+}
+
+function hexToRgb(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r},${g},${b}`;
 }

@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/inka-scoring";
 import type { CategoryKey } from "@/data/inka-questions";
+import { crossLinksExcluding } from "@/lib/all-tests";
 
 const InkaRadarChart = dynamic(() => import("@/components/InkaRadarChart"), { ssr: false });
 
@@ -282,35 +283,29 @@ export default function InkaResultClient({ params }: Props) {
           </div>
         </a>
 
-        {/* 偏差値シリーズCTA */}
+        {/* 偏差値シリーズ全7テスト */}
         <div
           className="rounded-2xl p-5 mb-8"
           style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
         >
           <p className="text-xs font-bold mb-3 text-center" style={{ color: "#3a2a5a" }}>
-            偏差値シリーズ
+            偏差値シリーズ — 他にも診断してみる
           </p>
-          <div className="flex flex-col gap-2">
-            <Link
-              href="/"
-              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-            >
-              <span className="text-xl">💘</span>
-              <div className="flex-1">
-                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>恋愛偏差値テスト</p>
-                <p className="text-xs" style={{ color: "#3a2a4a" }}>恋愛力を5軸で診断 →</p>
-              </div>
-            </Link>
-            <Link
-              href="/commu"
-              className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-            >
-              <span className="text-xl">💬</span>
-              <div className="flex-1">
-                <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>コミュ力偏差値テスト</p>
-                <p className="text-xs" style={{ color: "#1a3a55" }}>コミュ力を5軸で診断 →</p>
-              </div>
-            </Link>
+          <div className="flex flex-col gap-1">
+            {crossLinksExcluding("/inka/quiz").map((test) => (
+              <Link
+                key={test.href}
+                href={test.href}
+                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
+              >
+                <span className="text-lg">{test.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>{test.name}</p>
+                  <p className="text-xs" style={{ color: "#3a2a5a" }}>{test.desc} →</p>
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: test.color }} />
+              </Link>
+            ))}
           </div>
         </div>
 
