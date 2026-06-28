@@ -20,6 +20,25 @@ export interface CrossLink {
   color: string;
 }
 
+export interface TypeNames {
+  veryHigh: string; // ≥70
+  high: string;     // 55–69
+  mid: string;      // 40–54
+  low: string;      // <40
+}
+
+export interface AxisDesc {
+  s: string; // "強みのとき" の説明
+  w: string; // "弱みのとき" の説明
+}
+
+export interface NoteArticle {
+  title: string;
+  desc: string;
+  url: string;
+  price: string;
+}
+
 interface Props {
   params: Record<string, string>;
   themeColor: string;
@@ -32,6 +51,9 @@ interface Props {
   weaknessTexts: Record<string, string>;
   quizPath: string;
   crossLinks: CrossLink[];
+  typeNames: TypeNames;
+  axisDescriptions: Record<string, AxisDesc>;
+  noteArticle?: NoteArticle | null;
 }
 
 function toGrade(score: number): string {
@@ -43,6 +65,13 @@ function hexToRgb(hex: string): string {
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `${r},${g},${b}`;
+}
+
+function getTypeName(dev: number, names: TypeNames): string {
+  if (dev >= 70) return names.veryHigh;
+  if (dev >= 55) return names.high;
+  if (dev >= 40) return names.mid;
+  return names.low;
 }
 
 interface Particle {
@@ -63,6 +92,9 @@ export default function SharedResultClient({
   weaknessTexts,
   quizPath,
   crossLinks,
+  typeNames,
+  axisDescriptions,
+  noteArticle,
 }: Props) {
   const deviation = Number(params.d ?? 50);
   const rank = params.r ?? "";
@@ -77,13 +109,17 @@ export default function SharedResultClient({
   }
 
   const rgb = hexToRgb(themeColor);
+  const typeName = getTypeName(deviation, typeNames);
+  const punchline =
+    axisDescriptions[strengthKey]?.s && axisDescriptions[weaknessKey]?.w
+      ? `${axisDescriptions[strengthKey].s}のに、${axisDescriptions[weaknessKey].w}。`
+      : null;
 
   const [displayDev, setDisplayDev] = useState(50);
   const [jitter, setJitter] = useState(0);
   const [countDone, setCountDone] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [barsReady, setBarsReady] = useState(false);
-
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
@@ -98,24 +134,19 @@ export default function SharedResultClient({
       return;
     }
 
-    // GSAP countup with jitter
     const obj = { val: 50 };
     tweenRef.current = gsap.to(obj, {
       val: deviation,
       duration: 1.2,
       ease: "power2.out",
       onUpdate() {
-        const v = Math.round(obj.val);
-        setDisplayDev(v);
-        // random jitter ±2px during count
+        setDisplayDev(Math.round(obj.val));
         setJitter((Math.random() - 0.5) * 4);
       },
       onComplete() {
         setJitter(0);
         setCountDone(true);
         setBarsReady(true);
-
-        // Particle explosion (skip on mobile for perf)
         const isMobile = window.innerWidth < 768;
         if (!isMobile) {
           const ps: Particle[] = Array.from({ length: 20 }, (_, i) => ({
@@ -129,15 +160,20 @@ export default function SharedResultClient({
       },
     });
 
-    return () => {
-      tweenRef.current?.kill();
-    };
+    return () => { tweenRef.current?.kill(); };
   }, [deviation]);
 
   const gradeLines = categoryKeys
     .map((k) => `${categoryLabels[k]}${toGrade(normalizedScores[k])}`)
     .join(" / ");
-  const shareText = `${testName}の結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${gradeLines}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app`;
+
+  const shareText = [
+    `${testName}の結果：偏差値${deviation} ― ${typeName}`,
+    punchline ? `\n「${punchline}」` : "",
+    `\n\n${gradeLines}`,
+    `\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app`,
+  ].join("");
+
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;
@@ -148,10 +184,7 @@ export default function SharedResultClient({
         className="min-h-screen flex flex-col items-center justify-center px-5"
         style={{ background: bgGradient }}
       >
-        <p
-          className="text-center mb-6"
-          style={{ color: "rgba(255,255,255,0.4)" }}
-        >
+        <p className="text-center mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
           先に診断を受けてください。
         </p>
         <Link
@@ -179,15 +212,12 @@ export default function SharedResultClient({
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <p
-            className="text-xs font-bold mb-3"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          >
+          <p className="text-xs font-bold mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>
             {testEmoji} {testName}
           </p>
 
           {/* Deviation number + particles */}
-          <div className="relative inline-block mb-4">
+          <div className="relative inline-block mb-3">
             <div
               className="font-black leading-none"
               style={{
@@ -203,36 +233,46 @@ export default function SharedResultClient({
             >
               {displayDev}
             </div>
-
-            {/* Particles */}
             {particles.map((p) => (
               <div
                 key={p.id}
                 className="score-particle"
-                style={
-                  {
-                    "--pdx": `${p.dx}px`,
-                    "--pdy": `${p.dy}px`,
-                    background: themeColor,
-                    boxShadow: `0 0 6px ${themeColor}`,
-                  } as React.CSSProperties
-                }
+                style={{
+                  "--pdx": `${p.dx}px`,
+                  "--pdy": `${p.dy}px`,
+                  background: themeColor,
+                  boxShadow: `0 0 6px ${themeColor}`,
+                } as React.CSSProperties}
               />
             ))}
           </div>
 
-          {/* Rank badge — bounces in after countup */}
+          {/* Type name — the shareable label */}
+          {countDone ? (
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="font-black mb-3"
+              style={{
+                fontSize: "clamp(20px, 5vw, 28px)",
+                color: "#fff",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {typeName}
+            </motion.p>
+          ) : (
+            <div style={{ height: "36px" }} />
+          )}
+
+          {/* Rank badge */}
           {countDone ? (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{
-                delay: 0.3,
-                type: "spring",
-                stiffness: 500,
-                damping: 22,
-              }}
-              className="inline-flex items-center gap-2 text-lg font-bold px-5 py-2 rounded-full mb-4 badge-pulse"
+              transition={{ delay: 0.3, type: "spring", stiffness: 500, damping: 22 }}
+              className="inline-flex items-center gap-2 text-base font-bold px-5 py-2 rounded-full mb-4 badge-pulse"
               style={{
                 background: `rgba(${rgb},0.13)`,
                 color: "#fff",
@@ -245,7 +285,7 @@ export default function SharedResultClient({
             <div style={{ height: "44px" }} />
           )}
 
-          {/* 上位XX% — fades in after countup */}
+          {/* 上位XX% */}
           {countDone && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -255,19 +295,34 @@ export default function SharedResultClient({
               style={{ color: "rgba(255,255,255,0.3)" }}
             >
               上位{" "}
-              <span
-                style={{
-                  color: themeColor,
-                  fontWeight: 700,
-                  textShadow: `0 0 12px rgba(${rgb},0.5)`,
-                }}
-              >
+              <span style={{ color: themeColor, fontWeight: 700, textShadow: `0 0 12px rgba(${rgb},0.5)` }}>
                 {percentile}%
               </span>{" "}
               に位置します
             </motion.p>
           )}
         </motion.div>
+
+        {/* ── パンチライン ── */}
+        {punchline && countDone && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.45 }}
+            className="rounded-2xl p-5 mb-6 text-center"
+            style={{
+              background: `rgba(${rgb},0.07)`,
+              border: `1px solid rgba(${rgb},0.18)`,
+            }}
+          >
+            <p
+              className="text-sm font-bold leading-relaxed"
+              style={{ color: "rgba(255,255,255,0.85)", fontStyle: "normal" }}
+            >
+              「{punchline}」
+            </p>
+          </motion.div>
+        )}
 
         {/* ── レーダーチャート ── */}
         <motion.div
@@ -280,10 +335,7 @@ export default function SharedResultClient({
             border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
-          <p
-            className="text-xs font-bold mb-4 text-center"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          >
+          <p className="text-xs font-bold mb-4 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
             5軸レーダーチャート
           </p>
           <GenericRadarChart
@@ -302,10 +354,7 @@ export default function SharedResultClient({
             border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
-          <p
-            className="text-xs font-bold mb-5"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          >
+          <p className="text-xs font-bold mb-5" style={{ color: "rgba(255,255,255,0.3)" }}>
             カテゴリ別スコア
           </p>
           <div className="flex flex-col gap-4">
@@ -321,10 +370,7 @@ export default function SharedResultClient({
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span
-                        className="text-sm font-medium"
-                        style={{ color: "rgba(255,255,255,0.7)" }}
-                      >
+                      <span className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
                         {categoryLabels[key]}
                       </span>
                       <span
@@ -339,10 +385,7 @@ export default function SharedResultClient({
                         {grade}
                       </span>
                     </div>
-                    <span
-                      className="text-sm font-black"
-                      style={{ color: themeColor }}
-                    >
+                    <span className="text-sm font-black" style={{ color: themeColor }}>
                       {val}
                     </span>
                   </div>
@@ -353,11 +396,7 @@ export default function SharedResultClient({
                     <motion.div
                       initial={{ scaleX: 0 }}
                       animate={barsReady ? { scaleX: 1 } : {}}
-                      transition={{
-                        delay: 0.2 + idx * 0.12,
-                        duration: 0.65,
-                        ease: "easeOut",
-                      }}
+                      transition={{ delay: 0.2 + idx * 0.12, duration: 0.65, ease: "easeOut" }}
                       className="h-full rounded-full"
                       style={{
                         width: `${val}%`,
@@ -381,53 +420,29 @@ export default function SharedResultClient({
         >
           <div
             className="rounded-2xl p-5"
-            style={{
-              background: `rgba(${rgb},0.06)`,
-              border: `1px solid rgba(${rgb},0.2)`,
-            }}
+            style={{ background: `rgba(${rgb},0.06)`, border: `1px solid rgba(${rgb},0.2)` }}
           >
-            <p
-              className="text-xs font-bold mb-2"
-              style={{ color: themeColor }}
-            >
+            <p className="text-xs font-bold mb-2" style={{ color: themeColor }}>
               💪 強み
             </p>
-            <p
-              className="text-sm font-bold mb-1.5"
-              style={{ color: "rgba(255,255,255,0.9)" }}
-            >
+            <p className="text-sm font-bold mb-1.5" style={{ color: "rgba(255,255,255,0.9)" }}>
               {categoryLabels[strengthKey]}
             </p>
-            <p
-              className="text-xs leading-relaxed"
-              style={{ color: "rgba(255,255,255,0.4)" }}
-            >
+            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
               {strengthTexts[strengthKey]}
             </p>
           </div>
           <div
             className="rounded-2xl p-5"
-            style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
-            <p
-              className="text-xs font-bold mb-2"
-              style={{ color: "rgba(255,255,255,0.4)" }}
-            >
+            <p className="text-xs font-bold mb-2" style={{ color: "rgba(255,255,255,0.4)" }}>
               🌱 伸びしろ
             </p>
-            <p
-              className="text-sm font-bold mb-1.5"
-              style={{ color: "rgba(255,255,255,0.9)" }}
-            >
+            <p className="text-sm font-bold mb-1.5" style={{ color: "rgba(255,255,255,0.9)" }}>
               {categoryLabels[weaknessKey]}
             </p>
-            <p
-              className="text-xs leading-relaxed"
-              style={{ color: "rgba(255,255,255,0.4)" }}
-            >
+            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
               {weaknessTexts[weaknessKey]}
             </p>
           </div>
@@ -444,10 +459,7 @@ export default function SharedResultClient({
             href={tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{
-              boxShadow: `0 0 28px rgba(${rgb},0.4)`,
-              scale: 1.02,
-            }}
+            whileHover={{ boxShadow: `0 0 28px rgba(${rgb},0.4)`, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.18 }}
             className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base"
@@ -458,7 +470,6 @@ export default function SharedResultClient({
             </svg>
             結果をXでシェアする
           </motion.a>
-
           <Link
             href={quizPath}
             className="flex items-center justify-center w-full py-4 rounded-2xl font-bold text-base transition-all hover:opacity-80"
@@ -472,47 +483,80 @@ export default function SharedResultClient({
           </Link>
         </motion.div>
 
-        {/* ── note CTA ── */}
-        <motion.a
-          href="https://note.com/zen_ai_logic"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.01, boxShadow: `0 8px 24px rgba(${rgb},0.12)` }}
-          transition={{ duration: 0.18 }}
-          className="block rounded-2xl p-5 mb-6"
-          style={{
-            background: `rgba(${rgb},0.04)`,
-            border: `1px solid rgba(${rgb},0.15)`,
-            textDecoration: "none",
-          }}
-        >
-          <div className="flex items-start gap-4">
-            <div className="text-2xl mt-0.5 shrink-0">📖</div>
-            <div className="flex-1 min-w-0">
-              <p
-                className="text-xs font-bold mb-1.5"
-                style={{ color: themeColor }}
-              >
-                偏差値シリーズの研究をnoteで公開中
-              </p>
-              <p
-                className="text-sm font-bold mb-1.5 leading-snug"
-                style={{ color: "rgba(255,255,255,0.85)" }}
-              >
-                人見知り・コミュ力・恋愛を、心理学論文から考えた記事
-              </p>
-              <p
-                className="text-xs mb-3 leading-relaxed"
-                style={{ color: "rgba(255,255,255,0.3)" }}
-              >
-                テストを作るために読んだ論文と、自分の実生活を重ねて書いた記事シリーズ。
-              </p>
-              <span className="text-xs font-bold" style={{ color: themeColor }}>
-                noteで読む →
-              </span>
+        {/* ── note記事CTA ── */}
+        {noteArticle ? (
+          <motion.a
+            href={noteArticle.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.01, boxShadow: `0 8px 24px rgba(${rgb},0.12)` }}
+            transition={{ duration: 0.18 }}
+            className="block rounded-2xl p-5 mb-6"
+            style={{
+              background: `rgba(${rgb},0.06)`,
+              border: `1px solid rgba(${rgb},0.2)`,
+              textDecoration: "none",
+            }}
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-2xl mt-0.5 shrink-0">📖</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold mb-1.5" style={{ color: themeColor }}>
+                  このテストで調べた論文が記事になりました
+                </p>
+                <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  {noteArticle.title}
+                </p>
+                <p className="text-xs mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  {noteArticle.desc}
+                </p>
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className="text-xs font-bold px-2.5 py-1 rounded-full"
+                    style={{ background: `rgba(${rgb},0.18)`, color: themeColor }}
+                  >
+                    {noteArticle.price}
+                  </span>
+                  <span className="text-xs font-bold" style={{ color: themeColor }}>
+                    noteで読む →
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        </motion.a>
+          </motion.a>
+        ) : (
+          <motion.a
+            href="https://note.com/zen_ai_logic"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.01, boxShadow: `0 8px 24px rgba(${rgb},0.12)` }}
+            transition={{ duration: 0.18 }}
+            className="block rounded-2xl p-5 mb-6"
+            style={{
+              background: `rgba(${rgb},0.04)`,
+              border: `1px solid rgba(${rgb},0.15)`,
+              textDecoration: "none",
+            }}
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-2xl mt-0.5 shrink-0">📖</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold mb-1.5" style={{ color: themeColor }}>
+                  偏差値シリーズの研究をnoteで公開中
+                </p>
+                <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  人見知り・コミュ力・恋愛を、心理学論文から考えた記事
+                </p>
+                <p className="text-xs mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  テストを作るために読んだ論文と、自分の実生活を重ねて書いた記事シリーズ。
+                </p>
+                <span className="text-xs font-bold" style={{ color: themeColor }}>
+                  noteで読む →
+                </span>
+              </div>
+            </div>
+          </motion.a>
+        )}
 
         {/* ── 他のテスト ── */}
         <div
@@ -522,10 +566,7 @@ export default function SharedResultClient({
             border: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          <p
-            className="text-xs font-bold mb-4"
-            style={{ color: "rgba(255,255,255,0.25)" }}
-          >
+          <p className="text-xs font-bold mb-4" style={{ color: "rgba(255,255,255,0.25)" }}>
             偏差値シリーズ — 他のテスト
           </p>
           <div className="flex flex-col gap-0">
@@ -534,58 +575,31 @@ export default function SharedResultClient({
                 key={link.href}
                 href={link.href}
                 className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-                style={{
-                  borderTop:
-                    i > 0 ? "1px solid rgba(255,255,255,0.04)" : undefined,
-                }}
+                style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.04)" : undefined }}
               >
-                <span className="text-xl w-7 text-center shrink-0">
-                  {link.emoji}
-                </span>
+                <span className="text-xl w-7 text-center shrink-0">{link.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm font-bold"
-                    style={{ color: "rgba(255,255,255,0.8)" }}
-                  >
+                  <p className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.8)" }}>
                     {link.name}
                   </p>
-                  <p
-                    className="text-xs"
-                    style={{ color: "rgba(255,255,255,0.28)" }}
-                  >
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.28)" }}>
                     {link.desc} →
                   </p>
                 </div>
-                <div
-                  className="w-1.5 h-5 rounded-full shrink-0"
-                  style={{ background: link.color, opacity: 0.6 }}
-                />
+                <div className="w-1.5 h-5 rounded-full shrink-0" style={{ background: link.color, opacity: 0.6 }} />
               </Link>
             ))}
           </div>
         </div>
 
         {/* フッター */}
-        <p
-          className="text-center text-xs"
-          style={{ color: "rgba(255,255,255,0.15)" }}
-        >
+        <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.15)" }}>
           作成:{" "}
-          <a
-            href="https://x.com/Yoko_ai_dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-white transition-colors"
-          >
+          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">
             @Yoko_ai_dev
           </a>
           {" · "}
-          <a
-            href="https://yokoportofolio.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-white transition-colors"
-          >
+          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">
             Portfolio
           </a>
         </p>

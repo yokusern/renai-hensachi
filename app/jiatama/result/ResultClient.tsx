@@ -1,6 +1,7 @@
 "use client";
 
 import SharedResultClient from "@/components/SharedResultClient";
+import type { TypeNames, AxisDesc } from "@/components/SharedResultClient";
 import { crossLinksExcluding } from "@/lib/all-tests";
 import { JIATAMA_KEYS, JIATAMA_LABELS } from "@/lib/jiatama-scoring";
 
@@ -18,6 +19,36 @@ const WEAKNESS_TEXTS: Record<string, string> = {
   logic: "前提と結論の関係を厳密に評価するのが苦手で、感覚で判断しがちな傾向がある",
   premise: "主張をそのまま受け取りやすく、前提の穴や隠れた仮定を見逃すことがある",
   inhibit: "直感的に「正しそうな答え」に飛びつきやすく、再考する前に結論を出すことがある",
+};
+
+const TYPE_NAMES: TypeNames = {
+  veryHigh: "地頭エリート",
+  high: "論理的思考者",
+  mid: "直感優先型",
+  low: "思考の伸びしろ型",
+};
+
+const AXIS_DESCS: Record<string, AxisDesc> = {
+  pattern: {
+    s: "規則を瞬時に見抜くパターン認識力がある",
+    w: "規則の発見に時間がかかる",
+  },
+  abstract: {
+    s: "共通点を抜き出す抽象化力が高い",
+    w: "抽象的な思考への切り替えが苦手",
+  },
+  logic: {
+    s: "論理の筋道を正確にたどれる",
+    w: "感覚で判断しがち",
+  },
+  premise: {
+    s: "前提の穴を見抜く批判的思考がある",
+    w: "主張をそのまま受け取りがち",
+  },
+  inhibit: {
+    s: "直感を抑えて立ち止まれる",
+    w: "直感的な誤答に引っ張られやすい",
+  },
 };
 
 interface Props {
@@ -38,6 +69,9 @@ export default function JiatamaResultClient({ params }: Props) {
       weaknessTexts={WEAKNESS_TEXTS}
       quizPath="/jiatama/quiz"
       crossLinks={crossLinksExcluding("/jiatama/quiz")}
+      typeNames={TYPE_NAMES}
+      axisDescriptions={AXIS_DESCS}
+      noteArticle={null}
     />
   );
 }

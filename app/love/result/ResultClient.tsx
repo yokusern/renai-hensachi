@@ -1,6 +1,7 @@
 "use client";
 
 import SharedResultClient from "@/components/SharedResultClient";
+import type { TypeNames, AxisDesc } from "@/components/SharedResultClient";
 import { crossLinksExcluding } from "@/lib/all-tests";
 
 const LOVE_KEYS = ["communication", "selfAwareness", "empathy", "initiative", "mentalStability"];
@@ -26,6 +27,36 @@ const WEAKNESS_TEXTS: Record<string, string> = {
   mentalStability: "感情的な自立度が高く、相手に「もっと甘えてほしい」と感じさせることがある",
 };
 
+const TYPE_NAMES: TypeNames = {
+  veryHigh: "恋愛マスター",
+  high: "安定パートナー型",
+  mid: "片思い完走型",
+  low: "恋愛未実装",
+};
+
+const AXIS_DESCS: Record<string, AxisDesc> = {
+  communication: {
+    s: "気持ちを言葉にできる",
+    w: "想いを伝えられない",
+  },
+  selfAwareness: {
+    s: "聞き上手で話しやすい相手とされる",
+    w: "相手の話を受け止めきれていない",
+  },
+  empathy: {
+    s: "空気を読んで相手の感情がわかる",
+    w: "相手の本音が見えていない",
+  },
+  initiative: {
+    s: "好きなら動ける行動派",
+    w: "肝心な一言が出てこない",
+  },
+  mentalStability: {
+    s: "程よい距離感を保てる",
+    w: "心の距離を縮めるのが苦手",
+  },
+};
+
 interface Props {
   params: Record<string, string>;
 }
@@ -44,6 +75,9 @@ export default function LoveResultClient({ params }: Props) {
       weaknessTexts={WEAKNESS_TEXTS}
       quizPath="/love/quiz"
       crossLinks={crossLinksExcluding("/love/quiz")}
+      typeNames={TYPE_NAMES}
+      axisDescriptions={AXIS_DESCS}
+      noteArticle={null}
     />
   );
 }

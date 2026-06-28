@@ -1,6 +1,7 @@
 "use client";
 
 import SharedResultClient from "@/components/SharedResultClient";
+import type { TypeNames, AxisDesc } from "@/components/SharedResultClient";
 import { crossLinksExcluding } from "@/lib/all-tests";
 import { SHUKATSU_KEYS, SHUKATSU_LABELS } from "@/lib/shukatsu-scoring";
 
@@ -18,6 +19,36 @@ const WEAKNESS_TEXTS: Record<string, string> = {
   interview: "面接での発言が硬かったり、想定外の質問で詰まりやすい傾向がある",
   essay: "エピソードが抽象的で数字がなく、多くのESに埋もれてしまう可能性がある",
   action: "行動量・振り返りが少ないと改善サイクルが遅く、同じ失敗を繰り返しやすい",
+};
+
+const TYPE_NAMES: TypeNames = {
+  veryHigh: "内定量産型",
+  high: "戦略的就活生",
+  mid: "詰めが甘い型",
+  low: "就活スタートライン",
+};
+
+const AXIS_DESCS: Record<string, AxisDesc> = {
+  selfAnalysis: {
+    s: "自己分析が深く「なぜあなたか」を語れる",
+    w: "自己分析が浅く志望動機の軸がぶれる",
+  },
+  industryResearch: {
+    s: "業界・企業研究が深くて差別化できる",
+    w: "「なぜこの会社か」が答えられない",
+  },
+  interview: {
+    s: "面接本番に強い",
+    w: "想定外の質問で詰まりやすい",
+  },
+  essay: {
+    s: "数字とエピソードで刺さるESが書ける",
+    w: "ESが抽象的で埋もれがち",
+  },
+  action: {
+    s: "行動量と振り返りで改善サイクルが速い",
+    w: "行動量が足りず改善が遅い",
+  },
 };
 
 interface Props {
@@ -38,6 +69,9 @@ export default function ShukatsuResultClient({ params }: Props) {
       weaknessTexts={WEAKNESS_TEXTS}
       quizPath="/shukatsu/quiz"
       crossLinks={crossLinksExcluding("/shukatsu/quiz")}
+      typeNames={TYPE_NAMES}
+      axisDescriptions={AXIS_DESCS}
+      noteArticle={null}
     />
   );
 }

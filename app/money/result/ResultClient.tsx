@@ -1,6 +1,7 @@
 "use client";
 
 import SharedResultClient from "@/components/SharedResultClient";
+import type { TypeNames, AxisDesc } from "@/components/SharedResultClient";
 import { crossLinksExcluding } from "@/lib/all-tests";
 import { MONEY_KEYS, MONEY_LABELS } from "@/lib/money-scoring";
 
@@ -18,6 +19,36 @@ const WEAKNESS_TEXTS: Record<string, string> = {
   debt: "借入・クレカ・奨学金の仕組みへの理解が薄く、気づかないうちに利息を多く払っている可能性がある",
   system: "使える制度を知らないまま申請せず、毎年数万〜十数万円の節税機会を逃している可能性がある",
   risk: "詐欺や衝動的な投資判断に弱く、一度の失敗で大きな損失を被るリスクがある",
+};
+
+const TYPE_NAMES: TypeNames = {
+  veryHigh: "資産形成の達人",
+  high: "お金リテラシー高め",
+  mid: "平均的な金銭感覚",
+  low: "お金の勉強が必要型",
+};
+
+const AXIS_DESCS: Record<string, AxisDesc> = {
+  savings: {
+    s: "収支管理と先取り貯蓄で着実に積み上げられる",
+    w: "月末になると「なぜかない」状態になりやすい",
+  },
+  investment: {
+    s: "複利・分散・長期投資の理論を使いこなせる",
+    w: "投資の基礎知識が不足している",
+  },
+  debt: {
+    s: "借入の仕組みを理解して利息を最小化できる",
+    w: "気づかず余計な利息を払っている可能性がある",
+  },
+  system: {
+    s: "NISAやふるさと納税を活用して節税できる",
+    w: "使える制度を使えていない",
+  },
+  risk: {
+    s: "詐欺と衝動投資を冷静に避けられる",
+    w: "感情でお金を動かすリスクがある",
+  },
 };
 
 interface Props {
@@ -38,6 +69,9 @@ export default function MoneyResultClient({ params }: Props) {
       weaknessTexts={WEAKNESS_TEXTS}
       quizPath="/money/quiz"
       crossLinks={crossLinksExcluding("/money/quiz")}
+      typeNames={TYPE_NAMES}
+      axisDescriptions={AXIS_DESCS}
+      noteArticle={null}
     />
   );
 }

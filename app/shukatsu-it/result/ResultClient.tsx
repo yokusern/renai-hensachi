@@ -1,6 +1,7 @@
 "use client";
 
 import SharedResultClient from "@/components/SharedResultClient";
+import type { TypeNames, AxisDesc } from "@/components/SharedResultClient";
 import { crossLinksExcluding } from "@/lib/all-tests";
 import { SHUKATSU_IT_KEYS, SHUKATSU_IT_LABELS } from "@/lib/shukatsu-it-scoring";
 
@@ -18,6 +19,36 @@ const WEAKNESS_TEXTS: Record<string, string> = {
   commu: "技術的な内容を分かりやすく伝えることが苦手で、チームでの協働に課題が生まれやすい",
   industryUnderstanding: "業界トレンドや志望企業の技術環境への理解が薄く、入社後のギャップが生まれやすい",
   autonomy: "与えられた課題に取り組む力はあるが、自発的な学習・探求が少なく、成長速度が遅くなりやすい",
+};
+
+const TYPE_NAMES: TypeNames = {
+  veryHigh: "エンジニア内定確実型",
+  high: "実力派エンジニア卵",
+  mid: "ポートフォリオ不足型",
+  low: "基礎から積み上げ型",
+};
+
+const AXIS_DESCS: Record<string, AxisDesc> = {
+  techSkill: {
+    s: "実務レベルの技術力がある",
+    w: "技術的な基礎が薄い",
+  },
+  portfolio: {
+    s: "動くサービスで「作れる人」を証明できる",
+    w: "見せられる成果物が少ない",
+  },
+  commu: {
+    s: "技術を非エンジニアにも伝えられる",
+    w: "技術的な内容を言語化しにくい",
+  },
+  industryUnderstanding: {
+    s: "業界と志望企業の技術環境を深く理解している",
+    w: "業界理解が浅くギャップが生まれやすい",
+  },
+  autonomy: {
+    s: "自走力があり指示なしで動ける",
+    w: "自発的な学習・探求が少ない",
+  },
 };
 
 interface Props {
@@ -38,6 +69,9 @@ export default function ShukatsuItResultClient({ params }: Props) {
       weaknessTexts={WEAKNESS_TEXTS}
       quizPath="/shukatsu-it/quiz"
       crossLinks={crossLinksExcluding("/shukatsu-it/quiz")}
+      typeNames={TYPE_NAMES}
+      axisDescriptions={AXIS_DESCS}
+      noteArticle={null}
     />
   );
 }

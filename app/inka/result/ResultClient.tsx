@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import gsap from "gsap";
 import { GhostCommentWidget } from "@/components/GhostCommentWidget";
 import { CATEGORY_LABELS } from "@/lib/inka-scoring";
 import type { CategoryKey } from "@/data/inka-questions";
@@ -14,13 +16,7 @@ interface Props {
   params: Record<string, string>;
 }
 
-const CATEGORY_KEYS: CategoryKey[] = [
-  "hitomishiri",
-  "bocchi",
-  "hobbies",
-  "groupAversion",
-  "invisible",
-];
+const CATEGORY_KEYS: CategoryKey[] = ["hitomishiri", "bocchi", "hobbies", "groupAversion", "invisible"];
 
 const STRENGTH_TEXTS: Record<CategoryKey, string> = {
   hitomishiri: "人見知りレベルが高く、初対面・電話などが苦手な純正タイプ",
@@ -46,6 +42,23 @@ const BAR_COLORS: Record<CategoryKey, string> = {
   invisible: "#c084fc",
 };
 
+const AXIS_DESCS: Record<CategoryKey, { s: string; w: string }> = {
+  hitomishiri: { s: "人見知りが本物の純正タイプ", w: "初対面も案外いける" },
+  bocchi: { s: "ひとりの時間が心地よいソロ型", w: "実は誰かといたい" },
+  hobbies: { s: "インドア趣味への没頭力がある", w: "意外と外向きな趣味もある" },
+  groupAversion: { s: "群れが苦手な一匹狼", w: "群れること自体は割と平気" },
+  invisible: { s: "空気になれる透明人間型", w: "意外とプレゼンスが高い" },
+};
+
+function getTypeName(dev: number): string {
+  if (dev >= 70) return "純正陰キャ";
+  if (dev >= 55) return "中堅陰キャ";
+  if (dev >= 40) return "ライト陰キャ";
+  return "隠れ陽キャ";
+}
+
+interface Particle { id: number; dx: number; dy: number; }
+
 export default function InkaResultClient({ params }: Props) {
   const deviation = Number(params.d ?? 50);
   const rank = params.r ?? "標準的な陰キャ";
@@ -62,34 +75,66 @@ export default function InkaResultClient({ params }: Props) {
     invisible: Number(params.iv ?? 50),
   };
 
+  const typeName = getTypeName(deviation);
+  const punchline =
+    AXIS_DESCS[strengthKey]?.s && AXIS_DESCS[weaknessKey]?.w
+      ? `${AXIS_DESCS[strengthKey].s}なのに、${AXIS_DESCS[weaknessKey].w}。`
+      : null;
+
   const [displayDev, setDisplayDev] = useState(50);
-  const [visible, setVisible] = useState(false);
+  const [jitter, setJitter] = useState(0);
+  const [countDone, setCountDone] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [barsReady, setBarsReady] = useState(false);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
-    setVisible(true);
-    let frame = 0;
-    const totalFrames = 40;
-    const start = 50;
-    const end = deviation;
-
-    const tick = () => {
-      frame++;
-      const t = frame / totalFrames;
-      const eased = 1 - Math.pow(1 - t, 3);
-      setDisplayDev(Math.round(start + (end - start) * eased));
-      if (frame < totalFrames) requestAnimationFrame(tick);
-    };
-    const id = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(id);
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      setDisplayDev(deviation);
+      setCountDone(true);
+      setBarsReady(true);
+      return;
+    }
+    const obj = { val: 50 };
+    tweenRef.current = gsap.to(obj, {
+      val: deviation,
+      duration: 1.2,
+      ease: "power2.out",
+      onUpdate() {
+        setDisplayDev(Math.round(obj.val));
+        setJitter((Math.random() - 0.5) * 4);
+      },
+      onComplete() {
+        setJitter(0);
+        setCountDone(true);
+        setBarsReady(true);
+        if (window.innerWidth >= 768) {
+          const ps = Array.from({ length: 20 }, (_, i) => ({
+            id: i,
+            dx: Math.round((Math.random() - 0.5) * 220),
+            dy: Math.round(-Math.random() * 200 - 40),
+          }));
+          setParticles(ps);
+          setTimeout(() => setParticles([]), 900);
+        }
+      },
+    });
+    return () => { tweenRef.current?.kill(); };
   }, [deviation]);
 
-  const toGrade = (s: number) => s >= 70 ? 'A' : s >= 55 ? 'B' : s >= 40 ? 'C' : 'D';
-  const scores5 = `人見知り度${toGrade(normalizedScores.hitomishiri)} / ぼっち耐性${toGrade(normalizedScores.bocchi)} / 陰の趣味力${toGrade(normalizedScores.hobbies)} / 群れ苦手度${toGrade(normalizedScores.groupAversion)} / 目立ちたくなさ${toGrade(normalizedScores.invisible)}`;
-  const shareText = `陰キャ偏差値テストの結果：偏差値${deviation}（${rank}${rankEmoji}）\n\n${scores5}\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/inka`;
+  const toGrade = (s: number) => s >= 70 ? "A" : s >= 55 ? "B" : s >= 40 ? "C" : "D";
+  const scores5 = CATEGORY_KEYS.map((k) => `${CATEGORY_LABELS[k]}${toGrade(normalizedScores[k])}`).join(" / ");
+
+  const shareText = [
+    `陰キャ偏差値テストの結果：偏差値${deviation} ― ${typeName}`,
+    punchline ? `\n「${punchline}」` : "",
+    `\n\n${scores5}`,
+    `\n\nあなたも診断してみて\n→ renai-hensachi.vercel.app/inka`,
+  ].join("");
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   const isNoData = !params.d;
-
   if (isNoData) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center px-5" style={{ background: "linear-gradient(160deg, #120826 0%, #08051a 60%)" }}>
@@ -102,202 +147,224 @@ export default function InkaResultClient({ params }: Props) {
   }
 
   return (
-    <main
-      className="min-h-screen flex flex-col items-center"
-      style={{ background: "linear-gradient(160deg, #120826 0%, #08051a 60%, #060318 100%)" }}
-    >
+    <main className="min-h-screen flex flex-col items-center" style={{ background: "linear-gradient(160deg, #120826 0%, #08051a 60%, #060318 100%)" }}>
       <div className="w-full max-w-2xl mx-auto px-5 py-12">
 
-        {/* 偏差値ヒーロー */}
-        <div
-          className={`text-center mb-10 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+        {/* ── ヒーロー ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
         >
-          <p className="text-sm font-bold mb-4" style={{ color: "#7a5a99" }}>
-            あなたの
-          </p>
-          <p className="text-base font-bold mb-2" style={{ color: "#c4a8d8" }}>
-            陰キャ偏差値
-          </p>
-          <div
-            className="deviation-number text-8xl sm:text-9xl font-black mb-3 leading-none"
-            style={{ color: "#a855f7", fontVariantNumeric: "tabular-nums" }}
-          >
-            {displayDev}
-          </div>
-          <div
-            className="inline-flex items-center gap-2 text-xl font-bold px-6 py-2 rounded-full mb-4"
-            style={{ background: "rgba(168,85,247,0.15)", color: "#f0e8ff", border: "1px solid rgba(168,85,247,0.3)" }}
-          >
-            {rankEmoji} {rank}
-          </div>
-          <p className="text-sm" style={{ color: "#3a2a5a" }}>
-            上位 <span style={{ color: "#a855f7", fontWeight: 700 }}>{percentile}%</span> の陰キャ度
-          </p>
-        </div>
+          <p className="text-xs font-bold mb-3" style={{ color: "#7a5a99" }}>🌙 陰キャ偏差値テスト</p>
 
-        {/* レーダーチャート */}
-        <div
-          className="rounded-2xl p-6 mb-6"
+          <div className="relative inline-block mb-3">
+            <div
+              className="font-black leading-none"
+              style={{
+                fontSize: "clamp(80px,18vw,120px)",
+                color: "#a855f7",
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.04em",
+                fontFamily: "'Inter', sans-serif",
+                transform: `translateX(${jitter}px)`,
+                transition: "transform 0.05s linear",
+                textShadow: "0 0 60px rgba(168,85,247,0.4)",
+              }}
+            >
+              {displayDev}
+            </div>
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className="score-particle"
+                style={{ "--pdx": `${p.dx}px`, "--pdy": `${p.dy}px`, background: "#a855f7", boxShadow: "0 0 6px #a855f7" } as React.CSSProperties}
+              />
+            ))}
+          </div>
+
+          {countDone ? (
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="font-black mb-3"
+              style={{ fontSize: "clamp(20px,5vw,28px)", color: "#fff", letterSpacing: "-0.02em" }}
+            >
+              {typeName}
+            </motion.p>
+          ) : <div style={{ height: "36px" }} />}
+
+          {countDone ? (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 500, damping: 22 }}
+              className="inline-flex items-center gap-2 text-base font-bold px-5 py-2 rounded-full mb-4 badge-pulse"
+              style={{ background: "rgba(168,85,247,0.13)", color: "#f0e8ff", border: "1px solid rgba(168,85,247,0.35)" }}
+            >
+              {rankEmoji} {rank}
+            </motion.div>
+          ) : <div style={{ height: "44px" }} />}
+
+          {countDone && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="text-sm"
+              style={{ color: "#3a2a5a" }}
+            >
+              上位 <span style={{ color: "#a855f7", fontWeight: 700, textShadow: "0 0 12px rgba(168,85,247,0.5)" }}>{percentile}%</span> の陰キャ度
+            </motion.p>
+          )}
+        </motion.div>
+
+        {/* ── パンチライン ── */}
+        {punchline && countDone && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.45 }}
+            className="rounded-2xl p-5 mb-6 text-center"
+            style={{ background: "rgba(168,85,247,0.07)", border: "1px solid rgba(168,85,247,0.18)" }}
+          >
+            <p className="text-sm font-bold leading-relaxed" style={{ color: "rgba(255,255,255,0.85)" }}>
+              「{punchline}」
+            </p>
+          </motion.div>
+        )}
+
+        {/* ── レーダーチャート ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="rounded-2xl p-6 mb-5"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <p className="text-xs font-bold mb-4 text-center" style={{ color: "#7a5a99" }}>
-            5軸レーダーチャート
-          </p>
-          <InkaRadarChart
-            scores={normalizedScores}
-            labels={CATEGORY_LABELS as Record<string, string>}
-          />
-        </div>
+          <p className="text-xs font-bold mb-4 text-center" style={{ color: "#7a5a99" }}>5軸レーダーチャート</p>
+          <InkaRadarChart scores={normalizedScores} labels={CATEGORY_LABELS as Record<string, string>} />
+        </motion.div>
 
-        {/* カテゴリ別スコアバー */}
-        <div
-          className="rounded-2xl p-6 mb-6"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
-        >
-          <p className="text-xs font-bold mb-5" style={{ color: "#7a5a99" }}>
-            カテゴリ別スコア
-          </p>
+        {/* ── カテゴリ別スコアバー ── */}
+        <div className="rounded-2xl p-6 mb-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <p className="text-xs font-bold mb-5" style={{ color: "#7a5a99" }}>カテゴリ別スコア</p>
           <div className="flex flex-col gap-4">
-            {CATEGORY_KEYS.map((key) => {
+            {CATEGORY_KEYS.map((key, idx) => {
               const val = normalizedScores[key] ?? 0;
               const color = BAR_COLORS[key];
               return (
-                <div key={key}>
+                <motion.div
+                  key={key}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={barsReady ? { opacity: 1, x: 0 } : {}}
+                  transition={{ delay: 0.1 + idx * 0.12, duration: 0.4 }}
+                >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm font-medium" style={{ color: "#c4a8d8" }}>
-                      {CATEGORY_LABELS[key]}
-                    </span>
-                    <span className="text-sm font-black" style={{ color }}>
-                      {val}
-                    </span>
+                    <span className="text-sm font-medium" style={{ color: "#c4a8d8" }}>{CATEGORY_LABELS[key]}</span>
+                    <span className="text-sm font-black" style={{ color }}>{val}</span>
                   </div>
-                  <div className="w-full h-2 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${val}%`, background: color }}
+                  <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={barsReady ? { scaleX: 1 } : {}}
+                      transition={{ delay: 0.2 + idx * 0.12, duration: 0.65, ease: "easeOut" }}
+                      className="h-full rounded-full"
+                      style={{ width: `${val}%`, background: `linear-gradient(90deg, ${color}88, ${color})`, transformOrigin: "left" }}
                     />
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
 
-        {/* 強み・特徴 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div
-            className="rounded-2xl p-5"
-            style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)" }}
-          >
-            <p className="text-xs font-bold mb-2" style={{ color: "#a855f7" }}>
-              🌙 最も陰キャな軸
-            </p>
-            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>
-              {CATEGORY_LABELS[strengthKey]}
-            </p>
-            <p className="text-xs leading-relaxed" style={{ color: "#7a5a99" }}>
-              {STRENGTH_TEXTS[strengthKey]}
-            </p>
+        {/* ── 強み・弱み ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5"
+        >
+          <div className="rounded-2xl p-5" style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)" }}>
+            <p className="text-xs font-bold mb-2" style={{ color: "#a855f7" }}>🌙 最も陰キャな軸</p>
+            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>{CATEGORY_LABELS[strengthKey]}</p>
+            <p className="text-xs leading-relaxed" style={{ color: "#7a5a99" }}>{STRENGTH_TEXTS[strengthKey]}</p>
           </div>
-          <div
-            className="rounded-2xl p-5"
-            style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}
-          >
-            <p className="text-xs font-bold mb-2" style={{ color: "#c084fc" }}>
-              ☀️ 陽キャ寄りの軸
-            </p>
-            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>
-              {CATEGORY_LABELS[weaknessKey]}
-            </p>
-            <p className="text-xs leading-relaxed" style={{ color: "#7a5a99" }}>
-              {WEAKNESS_TEXTS[weaknessKey]}
-            </p>
+          <div className="rounded-2xl p-5" style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}>
+            <p className="text-xs font-bold mb-2" style={{ color: "#c084fc" }}>☀️ 陽キャ寄りの軸</p>
+            <p className="text-sm font-bold mb-1" style={{ color: "#f0e8ff" }}>{CATEGORY_LABELS[weaknessKey]}</p>
+            <p className="text-xs leading-relaxed" style={{ color: "#7a5a99" }}>{WEAKNESS_TEXTS[weaknessKey]}</p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* シェアボタン */}
-        <div className="flex flex-col gap-3 mb-8">
-          <a
+        {/* ── シェアボタン ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85, duration: 0.4 }}
+          className="flex flex-col gap-3 mb-10"
+        >
+          <motion.a
             href={tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base transition-opacity hover:opacity-85 active:opacity-70"
+            whileHover={{ boxShadow: "0 0 28px rgba(168,85,247,0.4)", scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.18 }}
+            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-bold text-white text-base"
             style={{ background: "#9333ea" }}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
-            Xでシェアする
-          </a>
-
+            結果をXでシェアする
+          </motion.a>
           <Link
             href="/inka/quiz"
             className="flex items-center justify-center w-full py-4 rounded-2xl font-bold text-base transition-all hover:opacity-80"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#7a5a99",
-            }}
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#7a5a99" }}
           >
             もう一度やる
           </Link>
-        </div>
+        </motion.div>
 
-        {/* note記事CTA */}
-        {/* TODO: href を実際の記事URLに差し替える（例: https://note.com/zen_ai_logic/n/xxxx）*/}
-        <a
+        {/* ── note記事CTA ── */}
+        <motion.a
           href="https://note.com/zen_ai_logic"
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-2xl p-5 mb-6 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
-          style={{
-            background: "rgba(147,51,234,0.09)",
-            border: "1px solid rgba(168,85,247,0.25)",
-            textDecoration: "none",
-          }}
+          whileHover={{ scale: 1.01, boxShadow: "0 8px 24px rgba(168,85,247,0.12)" }}
+          transition={{ duration: 0.18 }}
+          className="block rounded-2xl p-5 mb-6"
+          style={{ background: "rgba(147,51,234,0.09)", border: "1px solid rgba(168,85,247,0.25)", textDecoration: "none" }}
         >
           <div className="flex items-start gap-4">
             <div className="text-2xl mt-0.5 shrink-0">📖</div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold mb-1.5" style={{ color: "#a855f7" }}>
-                このテストで調べた論文が記事になりました
-              </p>
+              <p className="text-xs font-bold mb-1.5" style={{ color: "#a855f7" }}>このテストで調べた論文が記事になりました</p>
               <p className="text-sm font-bold mb-1.5 leading-snug" style={{ color: "#f0e8ff" }}>
-                人見知りが治らない理由を、論文と実生活から考えた
+                人見知りを治そうとして、頑張るたびにしんどくなってた
               </p>
               <p className="text-xs mb-3 leading-relaxed" style={{ color: "#7a5a99" }}>
-                頑張るほどしんどくなる理由。心理学研究5本が示していたのは、治し方よりも先にある話だった。
+                頑張るほどしんどくなる理由。心理学研究5本が示していたのは、「治し方」より先にある話だった。
               </p>
               <div className="flex items-center gap-2.5">
-                <span
-                  className="text-xs font-bold px-2.5 py-1 rounded-full"
-                  style={{ background: "rgba(168,85,247,0.2)", color: "#c084fc" }}
-                >
-                  ¥980
-                </span>
-                <span className="text-xs font-bold" style={{ color: "#a855f7" }}>
-                  noteで読む →
-                </span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(168,85,247,0.2)", color: "#c084fc" }}>¥980</span>
+                <span className="text-xs font-bold" style={{ color: "#a855f7" }}>noteで読む →</span>
               </div>
             </div>
           </div>
-        </a>
+        </motion.a>
 
-        {/* 偏差値シリーズ全7テスト */}
-        <div
-          className="rounded-2xl p-5 mb-8"
-          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <p className="text-xs font-bold mb-3 text-center" style={{ color: "#3a2a5a" }}>
-            偏差値シリーズ — 他にも診断してみる
-          </p>
+        {/* ── 他のテスト ── */}
+        <div className="rounded-2xl p-5 mb-8" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <p className="text-xs font-bold mb-3 text-center" style={{ color: "#3a2a5a" }}>偏差値シリーズ — 他にも診断してみる</p>
           <div className="flex flex-col gap-1">
             {crossLinksExcluding("/inka/quiz").map((test) => (
-              <Link
-                key={test.href}
-                href={test.href}
-                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5"
-              >
+              <Link key={test.href} href={test.href} className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5">
                 <span className="text-lg">{test.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold" style={{ color: "#f0e8ff" }}>{test.name}</p>
@@ -311,16 +378,11 @@ export default function InkaResultClient({ params }: Props) {
 
         <p className="text-center text-xs" style={{ color: "#2a1a4a" }}>
           作成:{" "}
-          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">
-            @Yoko_ai_dev
-          </a>
+          <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">@Yoko_ai_dev</a>
           {" · "}
-          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">
-            Portfolio
-          </a>
+          <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-400 transition-colors">Portfolio</a>
         </p>
       </div>
-      {/* 陰キャテストのテーマカラー: 紫系。8秒後に表示 */}
       <GhostCommentWidget color="#A855F7" delay={8} />
     </main>
   );
