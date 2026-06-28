@@ -51,6 +51,15 @@ const CATEGORIES = [
         color: "#10B981",
         primary: false,
       },
+      {
+        href: "/saki-nobashi/quiz",
+        emoji: "🛋️",
+        name: "先延ばし偏差値テスト",
+        desc: "後回しグセ・楽観バイアス・完璧主義。あなたの先延ばしタイプが分かる",
+        axes: ["後回しグセ", "決断力", "楽観バイアス", "自己管理", "完璧主義"],
+        color: "#F59E0B",
+        primary: false,
+      },
     ],
   },
   {

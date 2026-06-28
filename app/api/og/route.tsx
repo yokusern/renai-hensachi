@@ -67,6 +67,15 @@ const TEST_CONFIG: Record<string, { accent: string; bg: string; glow: string; la
     labelBg: "rgba(217,119,6,0.15)",
     labelBorder: "rgba(217,119,6,0.3)",
   },
+  "saki-nobashi": {
+    accent: "#f59e0b",
+    bg: "linear-gradient(135deg, #1a1200 0%, #100d00 50%, #1a1500 100%)",
+    glow: "rgba(245,158,11,0.12)",
+    label: "🛋️ 先延ばし偏差値テスト",
+    labelColor: "#fcd34d",
+    labelBg: "rgba(245,158,11,0.15)",
+    labelBorder: "rgba(245,158,11,0.3)",
+  },
 };
 
 export async function GET(req: NextRequest) {
