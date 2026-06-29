@@ -176,12 +176,116 @@ body {
 .hero-char {
   display: inline-block;
   will-change: transform, opacity;
+  opacity: 0;
 }
 
 /* ── Test card scroll reveal (starts hidden) ── */
 .test-card {
   will-change: transform, opacity;
 }
+
+/* ── Hub static styles ── */
+.hub-main {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%);
+}
+.hub-card-3d { perspective: 1000px; }
+.hub-card-inner { border-radius: 1rem; display: block; }
+.hub-text-bright { color: #f0eeff; }
+.hub-text-desc { color: #4a4a6a; }
+.hub-text-muted { color: #3a3a5a; }
+.hub-text-dim { color: #6a4a6a; }
+.hub-kicker { color: #3a3a5a; }
+.hub-hero-h1 {
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
+  font-size: clamp(52px, 10vw, 88px);
+  color: #f0eeff;
+}
+.hub-hero-accent { color: #e91e8c; }
+.hub-hero-sub {
+  color: #4a4a6a;
+  opacity: 0;
+  font-size: 0.875rem;
+  max-width: 28rem;
+  line-height: 1.85;
+}
+.hub-tag-rest {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  color: #3a3a5a;
+}
+.hub-blob-1 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+  width: 600px; height: 600px;
+  top: -100px; left: -100px;
+  background: radial-gradient(circle, rgba(236,72,153,0.09) 0%, transparent 70%);
+  animation: blobDrift1 20s ease-in-out infinite;
+}
+.hub-blob-2 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+  width: 500px; height: 500px;
+  top: 0; right: -80px;
+  background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
+  animation: blobDrift2 24s ease-in-out infinite;
+}
+.hub-blob-3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+  width: 400px; height: 400px;
+  top: 40%; left: 10%;
+  background: radial-gradient(circle, rgba(100,116,139,0.06) 0%, transparent 70%);
+  animation: blobDrift3 18s ease-in-out infinite;
+}
+.hub-cat-label {
+  font-size: 10.5px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  color: #3a3a5a;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.hub-cat-num {
+  color: #e91e8c;
+  font-size: 16px;
+  font-weight: 800;
+  margin-right: 8px;
+}
+.hub-footer {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.hub-footer-text {
+  font-size: 11px;
+  color: #2a2a4a;
+}
+.hub-footer-link {
+  font-size: 11px;
+  color: #2a2a4a;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.hub-footer-link:hover { color: rgba(255,255,255,0.6); }
 
 /* ── Reduced motion overrides ── */
 @media (prefers-reduced-motion: reduce) {

@@ -34,7 +34,7 @@ const CATEGORIES = [
         name: "陰キャ偏差値テスト",
         desc: "自分がどのタイプの陰キャか分類される",
         axes: ["人見知り度", "ぼっち耐性", "陰の趣味力"],
-        color: "#8B5CF6",
+        color: "#64748B",
         primary: false,
       },
     ],
@@ -114,8 +114,7 @@ function PrimaryCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
   const rgb = hexToRgb(t.color);
   return (
     <motion.div
-      className="test-card rounded-2xl"
-      style={{ transformPerspective: 1000 }}
+      className="test-card hub-card-3d rounded-2xl"
       whileHover={{
         y: -8,
         rotateX: 2,
@@ -134,10 +133,10 @@ function PrimaryCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className="text-2xl font-black mb-2" style={{ color: "#f0eeff" }}>
+            <p className="text-2xl font-black mb-2 hub-text-bright">
               {t.emoji} {t.name}
             </p>
-            <p className="text-sm mb-5" style={{ color: "#6a4a6a" }}>
+            <p className="text-sm mb-5 hub-text-dim">
               {t.desc}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -152,10 +151,7 @@ function PrimaryCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
               ))}
             </div>
           </div>
-          <p
-            className="text-xs font-mono shrink-0 mt-1"
-            style={{ color: "#4a2a4a" }}
-          >
+          <p className="text-xs font-mono shrink-0 mt-1 hub-text-muted">
             25問 · 5分
           </p>
         </div>
@@ -168,8 +164,7 @@ function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
   const rgb = hexToRgb(t.color);
   return (
     <motion.div
-      className="test-card rounded-2xl"
-      style={{ transformPerspective: 1000 }}
+      className="test-card hub-card-3d rounded-2xl"
       whileHover={{
         y: -8,
         rotateX: 2,
@@ -186,13 +181,10 @@ function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
           border: `1px solid rgba(${rgb},0.2)`,
         }}
       >
-        <p className="text-lg font-black mb-1.5" style={{ color: "#f0eeff" }}>
+        <p className="text-lg font-black mb-1.5 hub-text-bright">
           {t.emoji} {t.name}
         </p>
-        <p
-          className="text-xs mb-4 leading-relaxed"
-          style={{ color: "#3a3a5a" }}
-        >
+        <p className="text-xs mb-4 leading-relaxed hub-text-muted">
           {t.desc}
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -205,15 +197,7 @@ function SmallCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
               {a}
             </span>
           ))}
-          <span
-            className="text-[10px] px-2 py-0.5 rounded-full"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              color: "#3a3a5a",
-            }}
-          >
-            +2
-          </span>
+          <span className="hub-tag-rest">+2</span>
         </div>
       </Link>
     </motion.div>
@@ -224,8 +208,7 @@ function SingleCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
   const rgb = hexToRgb(t.color);
   return (
     <motion.div
-      className="test-card rounded-2xl"
-      style={{ transformPerspective: 1000 }}
+      className="test-card hub-card-3d rounded-2xl"
       whileHover={{
         y: -8,
         rotateX: 2,
@@ -244,13 +227,10 @@ function SingleCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className="text-xl font-black mb-2" style={{ color: "#f0eeff" }}>
+            <p className="text-xl font-black mb-2 hub-text-bright">
               {t.emoji} {t.name}
             </p>
-            <p
-              className="text-xs mb-4 leading-relaxed"
-              style={{ color: "#4a4a6a" }}
-            >
+            <p className="text-xs mb-4 leading-relaxed hub-text-desc">
               {t.desc}
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -265,12 +245,7 @@ function SingleCard({ t }: { t: (typeof CATEGORIES)[0]["tests"][0] }) {
               ))}
             </div>
           </div>
-          <p
-            className="text-xs font-mono shrink-0 mt-1"
-            style={{ color: "#3a3a5a" }}
-          >
-            25問
-          </p>
+          <p className="text-xs font-mono shrink-0 mt-1 hub-text-muted">25問</p>
         </div>
       </Link>
     </motion.div>
@@ -363,107 +338,45 @@ export default function Hub() {
   const line2plain = "する";
 
   return (
-    <main
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(160deg, #0d0820 0%, #080612 60%, #060410 100%)",
-      }}
-    >
+    <main className="hub-main">
       {/* ── Gradient mesh blobs ── */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="mesh-blob"
-          style={{
-            width: "600px",
-            height: "600px",
-            top: "-100px",
-            left: "-100px",
-            background:
-              "radial-gradient(circle, rgba(236,72,153,0.09) 0%, transparent 70%)",
-            animation: "blobDrift1 20s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="mesh-blob"
-          style={{
-            width: "500px",
-            height: "500px",
-            top: "0",
-            right: "-80px",
-            background:
-              "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%)",
-            animation: "blobDrift2 24s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="mesh-blob"
-          style={{
-            width: "400px",
-            height: "400px",
-            top: "40%",
-            left: "10%",
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)",
-            animation: "blobDrift3 18s ease-in-out infinite",
-          }}
-        />
+        <div className="hub-blob-1" />
+        <div className="hub-blob-2" />
+        <div className="hub-blob-3" />
       </div>
 
       <div className="relative max-w-3xl mx-auto px-6 pt-20 pb-24">
 
         {/* ── Hero ── */}
         <div className="mb-16">
-          <p
-            className="text-xs font-mono tracking-widest mb-4"
-            style={{ color: "#3a3a5a" }}
-          >
+          <p className="hub-kicker text-xs font-mono tracking-widest mb-4">
             HENSACHI SERIES — 7 TESTS
           </p>
 
-          <h1
-            className="font-black leading-[0.92] tracking-tight mb-6"
-            style={{ fontSize: "clamp(52px, 10vw, 88px)", color: "#f0eeff" }}
-          >
+          <h1 className="hub-hero-h1">
             {/* Line 1 */}
             <span>
               {line1.split("").map((c, i) => (
-                <span key={i} className="hero-char" style={{ opacity: 0 }}>
-                  {c}
-                </span>
+                <span key={i} className="hero-char">{c}</span>
               ))}
             </span>
             <br />
             {/* Line 2 — colored part */}
-            <span style={{ color: "#e91e8c" }}>
+            <span className="hub-hero-accent">
               {line2color.split("").map((c, i) => (
-                <span
-                  key={i + line1.length}
-                  className="hero-char"
-                  style={{ opacity: 0 }}
-                >
-                  {c}
-                </span>
+                <span key={i + line1.length} className="hero-char">{c}</span>
               ))}
             </span>
             {/* Line 2 — plain part */}
             <span>
               {line2plain.split("").map((c, i) => (
-                <span
-                  key={i + line1.length + line2color.length}
-                  className="hero-char"
-                  style={{ opacity: 0 }}
-                >
-                  {c}
-                </span>
+                <span key={i + line1.length + line2color.length} className="hero-char">{c}</span>
               ))}
             </span>
           </h1>
 
-          <p
-            className="hero-sub text-sm max-w-md leading-loose"
-            style={{ color: "#4a4a6a", opacity: 0 }}
-          >
+          <p className="hero-sub hub-hero-sub">
             心理学論文ベースの25問。偏差値と5軸レーダーで自分の傾向が見える。
           </p>
         </div>
@@ -473,24 +386,8 @@ export default function Hub() {
           {CATEGORIES.map((cat, ci) => (
             <section key={cat.label}>
               {/* Category label */}
-              <p
-                className="cat-label text-xs font-bold tracking-widest mb-4"
-                style={{
-                  color: "#3a3a5a",
-                  fontFamily: "'Inter', sans-serif",
-                  opacity: 0,
-                }}
-              >
-                <span
-                  style={{
-                    color: "#e91e8c",
-                    fontSize: "16px",
-                    fontWeight: 800,
-                    marginRight: "8px",
-                  }}
-                >
-                  {String(ci + 1).padStart(2, "0")}
-                </span>
+              <p className="cat-label hub-cat-label">
+                <span className="hub-cat-num">{String(ci + 1).padStart(2, "0")}</span>
                 {cat.label}
               </p>
 
@@ -517,31 +414,16 @@ export default function Hub() {
         </div>
 
         {/* ── Footer ── */}
-        <div
-          className="mt-16 pt-8"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-        >
+        <div className="hub-footer">
           <div className="flex items-center justify-between">
-            <p className="text-xs" style={{ color: "#2a2a4a" }}>
+            <p className="hub-footer-text">
               結果は保存されません。偏差値はN(50,10)正規化スコア。
             </p>
             <div className="flex gap-4">
-              <a
-                href="https://x.com/Yoko_ai_dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs transition-colors hover:text-white"
-                style={{ color: "#2a2a4a" }}
-              >
+              <a href="https://x.com/Yoko_ai_dev" target="_blank" rel="noopener noreferrer" className="hub-footer-link">
                 @Yoko_ai_dev
               </a>
-              <a
-                href="https://yokoportofolio.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs transition-colors hover:text-white"
-                style={{ color: "#2a2a4a" }}
-              >
+              <a href="https://yokoportofolio.vercel.app" target="_blank" rel="noopener noreferrer" className="hub-footer-link">
                 Portfolio
               </a>
             </div>
