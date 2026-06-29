@@ -112,6 +112,15 @@ const TEST_CONFIG: Record<string, { accent: string; bg: string; glow: string; la
     labelBg: "rgba(13,148,136,0.15)",
     labelBorder: "rgba(13,148,136,0.3)",
   },
+  "dopa-gaki": {
+    accent: "#84cc16",
+    bg: "linear-gradient(135deg, #061000 0%, #040b00 50%, #081200 100%)",
+    glow: "rgba(132,204,22,0.12)",
+    label: "🧠⚡ ドパガキ偏差値テスト",
+    labelColor: "#bef264",
+    labelBg: "rgba(132,204,22,0.15)",
+    labelBorder: "rgba(132,204,22,0.3)",
+  },
 };
 
 export async function GET(req: NextRequest) {

@@ -13,6 +13,7 @@ export const ALL_TESTS: CrossLink[] = [
   { href: "/seikaku-warusa/quiz", emoji: "😈", name: "性格の悪さ偏差値テスト",   desc: "マウント癖・計算高さ・嫉妬深さを偏差値化", color: "#BE123C" },
   { href: "/oshi-kakin/quiz",     emoji: "💸", name: "推し課金偏差値テスト",     desc: "課金額・遠征力・沼の深さを偏差値化",       color: "#F97316" },
   { href: "/dokuoya/quiz",        emoji: "🩹", name: "毒親育ち偏差値テスト",     desc: "過干渉・条件付き愛・共依存を偏差値化",     color: "#0D9488" },
+  { href: "/dopa-gaki/quiz",      emoji: "🧠⚡", name: "ドパガキ偏差値テスト",  desc: "即時報酬依存・短尺中毒・退屈耐性を偏差値化", color: "#84CC16" },
 ];
 
 export function crossLinksExcluding(currentHref: string): CrossLink[] {

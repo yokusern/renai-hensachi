@@ -96,6 +96,15 @@ const CATEGORIES = [
         color: "#FF3B5C",
         primary: false,
       },
+      {
+        href: "/dopa-gaki/quiz",
+        emoji: "🧠⚡",
+        name: "ドパガキ偏差値テスト",
+        desc: "即時報酬依存・短尺中毒・退屈耐性のなさ。脳のドーパミン汚染度が数値で分かる",
+        axes: ["即時報酬依存", "短尺中毒", "退屈耐性のなさ"],
+        color: "#84CC16",
+        primary: false,
+      },
     ],
   },
   {
