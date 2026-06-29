@@ -37,6 +37,33 @@ const CATEGORIES = [
         color: "#64748B",
         primary: false,
       },
+      {
+        href: "/seikaku-warusa/quiz",
+        emoji: "😈",
+        name: "性格の悪さ偏差値テスト",
+        desc: "マウント癖・計算高さ・嫉妬深さ。自分でも気づかない黒い部分が数値で出る",
+        axes: ["マウント癖", "計算高さ", "嫉妬深さ"],
+        color: "#BE123C",
+        primary: false,
+      },
+      {
+        href: "/oshi-kakin/quiz",
+        emoji: "💸",
+        name: "推し課金偏差値テスト",
+        desc: "課金額・遠征力・グッズ収集・布教力・沼の深さ。あなたの沼レベルが偏差値になる",
+        axes: ["課金額", "遠征力", "沼の深さ"],
+        color: "#F97316",
+        primary: false,
+      },
+      {
+        href: "/dokuoya/quiz",
+        emoji: "🩹",
+        name: "毒親育ち偏差値テスト",
+        desc: "過干渉・条件付き愛・罪悪感の植え付け。幼少期の環境が今に与えている影響を数値化",
+        axes: ["過干渉度", "条件付き愛", "共依存パターン"],
+        color: "#0D9488",
+        primary: false,
+      },
     ],
   },
   {
@@ -58,6 +85,15 @@ const CATEGORIES = [
         desc: "後回しグセ・楽観バイアス・完璧主義。あなたの先延ばしタイプが分かる",
         axes: ["後回しグセ", "決断力", "楽観バイアス", "自己管理", "完璧主義"],
         color: "#F59E0B",
+        primary: false,
+      },
+      {
+        href: "/sns-addiction/quiz",
+        emoji: "📱",
+        name: "SNS中毒度偏差値テスト",
+        desc: "通知依存・FOMO・時間溶解。脳のインターネット支配率が数値で分かる",
+        axes: ["通知依存", "承認欲求", "FOMO"],
+        color: "#FF3B5C",
         primary: false,
       },
     ],
@@ -351,7 +387,7 @@ export default function Hub() {
         {/* ── Hero ── */}
         <div className="mb-16">
           <p className="hub-kicker text-xs font-mono tracking-widest mb-4">
-            HENSACHI SERIES — 7 TESTS
+            HENSACHI SERIES — 12 TESTS
           </p>
 
           <h1 className="hub-hero-h1">

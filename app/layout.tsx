@@ -3,30 +3,24 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "恋愛偏差値テスト｜あなたの恋愛力を数値化する",
-  description:
-    "25問に答えるだけで、あなたの恋愛偏差値がわかる。コミュニケーション力・自己理解度・行動力・メンタル安定度を5軸で診断。",
   metadataBase: new URL("https://renai-hensachi.vercel.app"),
+  title: "偏差値テストシリーズ — 自分を数値化する",
+  description: "心理学論文ベースの25問×5軸。恋愛・コミュ力・陰キャ・地頭・就活・お金・先延ばし",
   openGraph: {
-    title: "恋愛偏差値テスト｜あなたの恋愛力を数値化する",
-    description:
-      "25問に答えるだけで、あなたの恋愛偏差値がわかる。コミュニケーション力・行動力・メンタル安定度を5軸で診断。",
+    title: "偏差値テストシリーズ — 自分を数値化する",
+    description: "心理学論文ベースの25問×5軸。恋愛・コミュ力・陰キャ・地頭・就活・お金・先延ばし",
     url: "https://renai-hensachi.vercel.app",
-    siteName: "恋愛偏差値テスト",
+    siteName: "偏差値テストシリーズ",
     locale: "ja_JP",
     type: "website",
-    images: [
-      {
-        url: "/api/og?d=62&r=%E6%81%8B%E6%84%9B%E4%B8%8A%E6%89%8B",
-        width: 1200,
-        height: 630,
-      },
-    ],
+    images: [{ url: "/api/og?type=hub", width: 1200, height: 630, alt: "偏差値テストシリーズ" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "恋愛偏差値テスト",
-    description: "25問で恋愛力を数値化。あなたの偏差値は？",
+    title: "偏差値テストシリーズ — 自分を数値化する",
+    description: "心理学論文ベースの25問×5軸。恋愛・コミュ力・陰キャ・地頭・就活・お金・先延ばし",
+    images: ["/api/og?type=hub"],
+    creator: "@Yoko_ai_dev",
   },
 };
 

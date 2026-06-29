@@ -1,9 +1,9 @@
 // 設計根拠:
-// ・人見知り度 → 社交不安尺度 (Liebowitz Social Anxiety Scale) + 人見知り研究
-// ・ぼっち耐性 → 孤独親和性 (Affiliation for Solitude) + 内向性 (Big Five / NEO-PI-R)
-// ・陰の趣味 → オタク趣味・インドア活動への親和性（国内サブカルチャー研究）
-// ・群れ苦手度 → 集団回避傾向（スクールカースト研究・保坂亨 2000）
-// ・目立ちたくなさ → 自己呈示欲求尺度 逆転項目 + 「空気になりたい」症候群
+// ・人見知り度 → Liebowitz Social Anxiety Scale (LSAS) + 人見知り研究（Cheek & Buss 1981）
+// ・ぼっち耐性 → 孤独親和性（Burger 1995: Need for Solitude）+ 内向性（Big Five NEO-PI-R）
+// ・陰の趣味 → オタク研究・インドア活動親和性（岡田斗司夫）+ 国内サブカルチャー研究
+// ・群れ苦手度 → 集団回避傾向（保坂亨 2000・スクールカースト研究）+ 社会的疲弊モデル
+// ・目立ちたくなさ → 自己呈示欲求逆転項目 + 「空気になりたい」症候群研究（小此木啓吾）
 
 export type CategoryKey =
   | "hitomishiri"
@@ -33,587 +33,587 @@ export interface Question {
 }
 
 export const questions: Question[] = [
-  // ── 人見知り度 (Q1-Q5) ────────────────────────────────────────────────────
+  // ── 人見知り度 (Q1–Q5) ─────────────────────────────────────────────────────
   {
     id: "iq01",
-    text: "初対面の人と話すとき、どんな気持ちになる？",
+    text: "グループワークのメンバーが決まるとき、あなたは？",
     category: "hitomishiri",
     options: [
       {
-        label: "かなり緊張する。何を話せばいいかわからなくなる",
-        scores: { hitomishiri: 3, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "少し緊張するが、話してみれば何とかなる",
-        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "特に緊張しない。普通に話せる",
+        label: "知り合いを見つけて素早く合流する",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "新しい出会いは楽しみ。むしろわくわくする",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "近くの人に「一緒にどうですか」と声をかける",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "目線であちこちにSOSを送り、誰かが来るのを待つ",
+        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 1 },
+      },
+      {
+        label: "一人余りそうになってから先生に振り分けてもらう",
+        scores: { hitomishiri: 3, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 2 },
       },
     ],
   },
   {
     id: "iq02",
-    text: "知らない人ばかりのグループイベントに誘われたら？",
+    text: "知らない人ばかりの飲み会に誘われた。どう返信する？",
     category: "hitomishiri",
     options: [
       {
-        label: "極力断る。行っても楽しめないのがわかっている",
-        scores: { hitomishiri: 3, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 2 },
+        label: "「行く！よろしく！」と即OK",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "気が重いが、頑張って行くこともある",
+        label: "「予定確認してから連絡する」と言って、参加者リストを確認する",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "「その日は予定があって〜」と断る（実は何もない）",
         scores: { hitomishiri: 2, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 1 },
       },
       {
-        label: "特に気にせず行く",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "楽しみに行く。誰でも仲良くなれる自信がある",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "既読して3日後に「ごめん遅くなった、やっぱり難しい」と送る",
+        scores: { hitomishiri: 3, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 2 },
       },
     ],
   },
   {
     id: "iq03",
-    text: "店員さんや窓口スタッフに話しかけることは？",
+    text: "知らない番号から電話がかかってきた。どうする？",
     category: "hitomishiri",
     options: [
       {
-        label: "かなり勇気がいる。できればセルフで済ませたい",
+        label: "すぐ出る",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "1回無視してから折り返す",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "出ない。Googleで番号を調べてから対応する",
+        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "出ない。連絡はLINEかメールにしてください",
         scores: { hitomishiri: 3, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 2 },
-      },
-      {
-        label: "少し気を使うが、問題なくできる",
-        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "全く気にならない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "むしろ積極的に話しかける",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
     ],
   },
   {
     id: "iq04",
-    text: "新しい人が加わったとき、自分から声をかけることは？",
+    text: "授業で突然「隣の人と自己紹介して」と言われた。",
     category: "hitomishiri",
     options: [
       {
-        label: "ほぼない。相手から来てくれるまで待つ",
-        scores: { hitomishiri: 3, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 2 },
+        label: "笑顔で「よろしくお願いします！」と手を差し出す",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "タイミングがあれば声をかける",
+        label: "少し照れながらも普通にこなせる",
         scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
       },
       {
-        label: "自分から声をかけることが多い",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "心拍数が上がりながら、頭の中でセリフをリハーサルする",
+        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 1 },
       },
       {
-        label: "積極的に歓迎する。自分がリードして打ち解けようとする",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "「なんで急に...」と思いながら笑顔を作ってやり過ごす",
+        scores: { hitomishiri: 3, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 2 },
       },
     ],
   },
   {
     id: "iq05",
-    text: "電話をかけることに対して、どう感じる？",
+    text: "外で知り合いを見かけたが、相手はまだ気づいていない。",
     category: "hitomishiri",
     options: [
       {
-        label: "かなり苦手。LINEやメールで済むならそうする",
-        scores: { hitomishiri: 3, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 2 },
-      },
-      {
-        label: "できるが、少し気が重い",
-        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "特に気にならない",
+        label: "こちらから声をかける",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "テキストよりも電話の方が楽なことも多い",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "目が合ったら声をかける",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "目線をそらして別のルートを歩く",
+        scores: { hitomishiri: 2, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 2 },
+      },
+      {
+        label: "通り過ぎた後、謎の後ろめたさを感じる",
+        scores: { hitomishiri: 3, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 3 },
       },
     ],
   },
 
-  // ── ぼっち耐性 (Q6-Q10) ──────────────────────────────────────────────────
+  // ── ぼっち耐性 (Q6–Q10) ────────────────────────────────────────────────────
   {
     id: "iq06",
-    text: "一人でご飯を食べることは？",
+    text: "大学の学食に1人で入れる？",
     category: "bocchi",
     options: [
       {
-        label: "全然平気。むしろ一人の方が落ち着く",
-        scores: { hitomishiri: 0, bocchi: 3, hobbies: 1, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "気にしないが、一人のときは早めに終わらせる",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "できれば誰かと一緒がいい",
+        label: "余裕。むしろ気楽",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "一人はさみしい。誰かを誘う",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "入れるが、少し周りの目が気になる",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "できれば誰かと入りたい。1人だと浮いている気がする",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "空きコマは学食を避ける。コンビニで買って人気のない場所で食べる",
+        scores: { hitomishiri: 2, bocchi: 3, hobbies: 0, groupAversion: 1, invisible: 2 },
       },
     ],
   },
   {
     id: "iq07",
-    text: "週末に予定が何もないとき、どう感じる？",
+    text: "何も予定のない土日が丸1日ある。どう過ごす？",
     category: "bocchi",
     options: [
       {
-        label: "最高。ゆっくりできると思ってむしろテンションが上がる",
-        scores: { hitomishiri: 0, bocchi: 3, hobbies: 2, groupAversion: 2, invisible: 1 },
-      },
-      {
-        label: "まあいいか。一人でも充実できる",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 1, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "少し暇だが、特に問題ない",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "誰かを誘う。予定がないのは耐えられない",
+        label: "友達を誘って外に出る",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "家でゲームや映画でまったり。最高の1日",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "SNSを眺めながら「何かしたいが何もしたくない」をループする",
+        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "誰とも連絡せず1日家にいて、それを誰にも言わない",
+        scores: { hitomishiri: 1, bocchi: 3, hobbies: 1, groupAversion: 1, invisible: 2 },
       },
     ],
   },
   {
     id: "iq08",
-    text: "一人旅・一人映画館・一人カラオケなどは？",
+    text: "1人でカラオケに行ったことがある？（または行ける？）",
     category: "bocchi",
     options: [
       {
-        label: "普通にする。むしろ好き",
-        scores: { hitomishiri: 0, bocchi: 3, hobbies: 1, groupAversion: 1, invisible: 2 },
+        label: "よく行く。1人が一番はかどる",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "できるが、どちらかというと一緒の方が好き",
+        label: "行ったことはある / 行けると思う",
         scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "あまりしない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "行けるかもしれないが、考えたことがない",
+        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "一人では楽しめない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "「ひとりカラオケ」は自分には縁のない世界",
+        scores: { hitomishiri: 0, bocchi: 3, hobbies: 0, groupAversion: 1, invisible: 0 },
       },
     ],
   },
   {
     id: "iq09",
-    text: "人と長時間一緒にいると、疲れを感じる？",
+    text: "急に3連休が取れた。1人旅できる？",
     category: "bocchi",
     options: [
       {
-        label: "かなり疲れる。一人の時間でエネルギーを回復する",
-        scores: { hitomishiri: 0, bocchi: 3, hobbies: 0, groupAversion: 2, invisible: 1 },
+        label: "即計画する。1人旅大好き",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "少し疲れることはある",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "あまり感じない",
+        label: "行けると思う。宿とルートが決まれば動ける",
         scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "人といる方がむしろ元気になる",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "全部自分で決めるのが面倒で、結局家にいそう",
+        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "家でいい。旅先でもぼっちになるだけだし",
+        scores: { hitomishiri: 1, bocchi: 3, hobbies: 1, groupAversion: 1, invisible: 1 },
       },
     ],
   },
   {
     id: "iq10",
-    text: "友達からのLINEに対して、どう感じることが多い？",
+    text: "1人の時間と、人と過ごす時間。どちらが「充電」になる？",
     category: "bocchi",
     options: [
       {
-        label: "内容によっては気が重くなる。返信を後回しにすることがある",
-        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 1, invisible: 2 },
-      },
-      {
-        label: "タイミングを見て返す",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "だいたいすぐ返す",
+        label: "人と過ごす時間。外に出るほど元気になる",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "既読したらすぐ返す。テンポよいやりとりが好き",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "どちらも同じくらい好き",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "1人の時間が必要。人といると疲れる",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 1, groupAversion: 1, invisible: 1 },
+      },
+      {
+        label: "1人でないと回復しない。人と会った翌日は必ずダウンタイムが必要",
+        scores: { hitomishiri: 1, bocchi: 3, hobbies: 1, groupAversion: 2, invisible: 1 },
       },
     ],
   },
 
-  // ── 陰の趣味 (Q11-Q15) ────────────────────────────────────────────────────
+  // ── 陰の趣味 (Q11–Q15) ────────────────────────────────────────────────────
   {
     id: "iq11",
-    text: "休日の典型的な過ごし方は？",
+    text: "家で1人の夜、何をしていることが多い？",
     category: "hobbies",
     options: [
       {
-        label: "家でゲーム・アニメ・漫画・読書などインドア活動",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 3, groupAversion: 2, invisible: 1 },
-      },
-      {
-        label: "家でのんびりしつつ、たまに外出もする",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 1, groupAversion: 1, invisible: 0 },
-      },
-      {
-        label: "外に出て友達と遊ぶ",
+        label: "誰かとLINEや通話しながら過ごす",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "積極的に色々なイベントや外出に参加する",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "Netflix・YouTube・アニメを見ている",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "ゲーム・趣味・創作に没頭している",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 2, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "「何もしない」がいちばん落ち着く。ボーッとするのが好き",
+        scores: { hitomishiri: 0, bocchi: 2, hobbies: 3, groupAversion: 1, invisible: 1 },
       },
     ],
   },
   {
     id: "iq12",
-    text: "趣味として近いものは？（最も当てはまるもの）",
+    text: "自分の趣味、人に話せる？",
     category: "hobbies",
     options: [
       {
-        label: "ゲーム・アニメ・漫画・同人・鉄道・音楽鑑賞など",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 3, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "読書・映画・料理・プログラミングなどのインドア趣味",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 2, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "スポーツ・アウトドアなど外向きな趣味",
+        label: "全部普通に話せる",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "特定の趣味がない or 飲み会・旅行などアウトドア系",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "大体話せる（少しマニアックなものは隠してる）",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "一部は恥ずかしくて話せない",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 2, groupAversion: 0, invisible: 2 },
+      },
+      {
+        label: "趣味が「ウケなさそう」なものばかりで、聞かれたら「特にない」と答える",
+        scores: { hitomishiri: 1, bocchi: 1, hobbies: 3, groupAversion: 0, invisible: 2 },
       },
     ],
   },
   {
     id: "iq13",
-    text: "「深夜に一人でコンビニに行く」という行動について",
+    text: "好きなアニメ・漫画・ゲーム・キャラクターがいる？",
     category: "hobbies",
     options: [
       {
-        label: "むしろ好きな時間。静かで人が少なくて落ち着く",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 1, groupAversion: 2, invisible: 2 },
-      },
-      {
-        label: "たまにある",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "夜はあまり出ない",
+        label: "ない。特定のコンテンツにはまる習慣がない",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "深夜でも誰かと出かける方が好き",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "ある。でも「推し」というほどではない",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "ある。家ではかなりのめり込んでいる",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 2, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "ある。でも外では話さない。バレたら何か言われそうで怖い",
+        scores: { hitomishiri: 1, bocchi: 1, hobbies: 3, groupAversion: 0, invisible: 2 },
       },
     ],
   },
   {
     id: "iq14",
-    text: "好きなゲームや作品にハマったとき、どうなる？",
+    text: "夜11時、部屋で1人。充実していると感じる瞬間は？",
     category: "hobbies",
     options: [
       {
-        label: "寝食を忘れてのめり込む。誰かに話したくて仕方なくなる",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 3, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "かなりのめり込む",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 2, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "楽しむが、そこまでのめり込まない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "のめり込むタイプではない",
+        label: "明日の楽しい予定を考えているとき",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "好きなことに集中しているとき",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "静かに好きなものを見ているとき",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 2, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "「今日も誰とも話さなかったけどまあいいか」と思えたとき",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 3, groupAversion: 1, invisible: 2 },
       },
     ],
   },
   {
     id: "iq15",
-    text: "SNSの使い方として近いのは？",
+    text: "頑張った日の帰り道、何でリセットする？",
     category: "hobbies",
     options: [
       {
-        label: "見る専門（ROM専）。自分からはほとんど発信しない",
-        scores: { hitomishiri: 1, bocchi: 1, hobbies: 1, groupAversion: 1, invisible: 3 },
-      },
-      {
-        label: "フォローはするが、投稿はたまにしかしない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 2 },
-      },
-      {
-        label: "普通に使う。投稿もする",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "積極的に発信・交流する",
+        label: "友達に電話して話す / 誰かに会いに行く",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "好きな音楽を聴きながら帰る",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "何も考えずに動画やアニメを見る",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 1, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "誰とも話さず、静かな自分の空間に帰る",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 2, groupAversion: 1, invisible: 1 },
       },
     ],
   },
 
-  // ── 群れ苦手度 (Q16-Q20) ────────────────────────────────────────────────
+  // ── 群れ苦手度 (Q16–Q20) ──────────────────────────────────────────────────
   {
     id: "iq16",
-    text: "大人数の飲み会やパーティーは？",
+    text: "飲み会の帰り際、「もう一軒行こう！」と声がかかった。",
     category: "groupAversion",
     options: [
       {
-        label: "極力行きたくない。行っても楽しめないとわかっている",
-        scores: { hitomishiri: 2, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 2 },
+        label: "「行く行く！」と喜んで合流する",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "気が重いが、参加することもある",
+        label: "気分次第。楽しければ行く",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "「終電がある...」と言って帰る（まだある）",
         scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 1 },
       },
       {
-        label: "まあ楽しめる",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "大人数の場が好き。テンションが上がる",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "1時間前から「どのタイミングで帰れるか」を計算していた",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 1 },
       },
     ],
   },
   {
     id: "iq17",
-    text: "クラスや職場の「みんな一緒」な雰囲気は？",
+    text: "人が多い場所（ショッピングモール、祭り等）に行くと？",
     category: "groupAversion",
     options: [
       {
-        label: "苦手。流されるのが嫌。一人でいる方が自分らしい",
-        scores: { hitomishiri: 0, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 2 },
-      },
-      {
-        label: "合わせるが、あまり好きではない",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 1 },
-      },
-      {
-        label: "まあ普通。気にならない",
+        label: "テンションが上がる。にぎやかなのが好き",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "一体感が好き。みんなで盛り上がるのが楽しい",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "特に問題ない。用事があれば行ける",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "疲れる。できれば空いている時間に行きたい",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 0 },
+      },
+      {
+        label: "人が多いとわかったら行かなくなった。用事はネットで完結させる",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 1, groupAversion: 3, invisible: 1 },
       },
     ],
   },
   {
     id: "iq18",
-    text: "グループLINEの通知が大量に来ているとき、どう感じる？",
+    text: "グループのトークで、自分はどんな立ち位置が多い？",
     category: "groupAversion",
     options: [
       {
-        label: "正直うんざりする。通知オフにしていることもある",
-        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 3, invisible: 2 },
-      },
-      {
-        label: "少し疲れるが、確認はする",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "特に気にならない",
+        label: "会話の中心・発信側にいることが多い",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "盛り上がって楽しい",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "合いの手を入れたり、時々発信したりする",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "誰かが面白いことを言ったらリアクションする側",
+        scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 1 },
+      },
+      {
+        label: "既読はついている。発言頻度が極端に少ない",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 2 },
       },
     ],
   },
   {
     id: "iq19",
-    text: "グループ作業・共同プロジェクトに取り組むとき、どう感じる？",
+    text: "気の合わない人と数時間過ごさないといけない状況。",
     category: "groupAversion",
     options: [
       {
-        label: "気を使って疲れる。一人の方が効率いいと思ってしまう",
+        label: "会話を引っ張って場を持たせられる",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "必要な会話はできるが、少し疲れる",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "苦手だが、何とか乗り切れる",
+        scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 1 },
+      },
+      {
+        label: "帰ってからドッと疲れる。消耗した分は必ず回収が必要",
         scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 1 },
-      },
-      {
-        label: "慣れるまで少し気を使うが、なんとかなる",
-        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
-      },
-      {
-        label: "特に気にならない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
-      },
-      {
-        label: "みんなで取り組む方が好き",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
     ],
   },
   {
     id: "iq20",
-    text: "「スクールカースト」や「陽キャ・陰キャ」の区分けは、自分の生活にあったと思う？",
+    text: "旅行や帰省のお土産、何人分買う？",
     category: "groupAversion",
     options: [
       {
-        label: "あった。自分は明らかに陰キャ側だった",
-        scores: { hitomishiri: 1, bocchi: 1, hobbies: 1, groupAversion: 3, invisible: 2 },
-      },
-      {
-        label: "なんとなくあった気がする",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 1 },
-      },
-      {
-        label: "あまり意識しなかった",
+        label: "友達が多いのでかなりたくさん（10人以上）",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "なかった or 自分は陽キャ側だった",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "仲がいい人を中心に5〜10人分",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 0 },
+      },
+      {
+        label: "「誰に渡すかな」と考えて、結果3〜5人分",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 0 },
+      },
+      {
+        label: "そもそもお土産を渡す相手をあまり持っていない",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 3, invisible: 1 },
       },
     ],
   },
 
-  // ── 目立ちたくなさ (Q21-Q25) ────────────────────────────────────────────
+  // ── 目立ちたくなさ (Q21–Q25) ──────────────────────────────────────────────
   {
     id: "iq21",
-    text: "自分に注目が集まる場面（発表・誕生日サプライズなど）は？",
+    text: "授業やゼミで発表の当番が回ってきた。",
     category: "invisible",
     options: [
       {
-        label: "かなり苦手。居心地が悪くて早く終わってほしくなる",
-        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 3 },
+        label: "準備して臨む。発表は普通にできる",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "少し照れるが、まあ大丈夫",
+        label: "緊張するけど何とかやり切れる",
         scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
       },
       {
-        label: "特に気にならない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "数日前から憂鬱になる。当日は心臓バクバク",
+        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 2 },
       },
       {
-        label: "注目を浴びるのは好き",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "「指名されませんように」と授業中ずっと思っている",
+        scores: { hitomishiri: 3, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 3 },
       },
     ],
   },
   {
     id: "iq22",
-    text: "自分の服装・髪型などの見た目について",
+    text: "人前で間違いを指摘されると？",
     category: "invisible",
     options: [
       {
-        label: "目立ちたくない。派手なものは避ける",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 3 },
-      },
-      {
-        label: "シンプルが好き。ただ目立ちたくないわけでもない",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 2 },
-      },
-      {
-        label: "普通に好きなものを選ぶ",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "おしゃれが好きで、人の目を意識したコーデを楽しむ",
+        label: "「ありがとうございます」と素直に受け取れる",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+      },
+      {
+        label: "少し恥ずかしいが、普通に対応できる",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "頭が真っ白になって、その後しばらく引きずる",
+        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 2 },
+      },
+      {
+        label: "その場から消えたくなる",
+        scores: { hitomishiri: 2, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 3 },
       },
     ],
   },
   {
     id: "iq23",
-    text: "大勢の前で自分の意見を発言することは？",
+    text: "誕生日を盛大に祝われると？",
     category: "invisible",
     options: [
       {
-        label: "できれば避けたい。当てられると頭が真っ白になる",
-        scores: { hitomishiri: 2, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 3 },
-      },
-      {
-        label: "できるが、進んでする方ではない",
-        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "言いたいことがあれば普通に言える",
+        label: "嬉しい。サプライズも大歓迎",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "積極的に発言する。むしろ前に出たい",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "少し恥ずかしいが、嬉しい",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
+      },
+      {
+        label: "恥ずかしい。こじんまりと祝ってほしい",
+        scores: { hitomishiri: 1, bocchi: 0, hobbies: 0, groupAversion: 1, invisible: 2 },
+      },
+      {
+        label: "誕生日を知られたくない。祝われると申し訳ない気持ちになる",
+        scores: { hitomishiri: 2, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 3 },
       },
     ],
   },
   {
     id: "iq24",
-    text: "グループの中での自分の立ち位置は？",
+    text: "「席を自由に選んでください」と言われたら、どこを選ぶ？",
     category: "invisible",
     options: [
       {
-        label: "空気みたいな存在。いてもいなくても変わらない気がする",
-        scores: { hitomishiri: 1, bocchi: 2, hobbies: 0, groupAversion: 1, invisible: 3 },
+        label: "前の方。見やすいし、存在感を出せる",
+        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "大人しいけど、いるのはわかる感じ",
-        scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 0, invisible: 2 },
-      },
-      {
-        label: "普通。特に意識したことがない",
+        label: "真ん中あたり。適度な位置",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
       },
       {
-        label: "存在感がある方だと思う",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "後ろよりの端。誰かに見られる面積が少ない",
+        scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 2 },
+      },
+      {
+        label: "一番後ろの端。存在を最小化できる最善の位置",
+        scores: { hitomishiri: 2, bocchi: 1, hobbies: 0, groupAversion: 2, invisible: 3 },
       },
     ],
   },
   {
     id: "iq25",
-    text: "クラスの集合写真や卒業アルバムを見ると、自分は？",
+    text: "大学4年間を振り返って、一番「充実した」と思えそうな記憶は？",
     category: "invisible",
     options: [
       {
-        label: "探すのに苦労する位置か、隅の方にいる",
-        scores: { hitomishiri: 1, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 3 },
-      },
-      {
-        label: "普通にいる",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 1 },
-      },
-      {
-        label: "割と目立つところにいる",
+        label: "友達と笑いながら騒いだ記憶",
         scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
       },
       {
-        label: "中心にいることが多い",
-        scores: { hitomishiri: 0, bocchi: 0, hobbies: 0, groupAversion: 0, invisible: 0 },
+        label: "少人数で深い会話をした記憶",
+        scores: { hitomishiri: 0, bocchi: 1, hobbies: 0, groupAversion: 1, invisible: 1 },
+      },
+      {
+        label: "1人で没頭した研究・趣味・創作の記憶",
+        scores: { hitomishiri: 0, bocchi: 2, hobbies: 2, groupAversion: 1, invisible: 1 },
+      },
+      {
+        label: "誰にも見られずに、静かにやりたいことをやれた記憶",
+        scores: { hitomishiri: 1, bocchi: 2, hobbies: 2, groupAversion: 2, invisible: 3 },
       },
     ],
   },
